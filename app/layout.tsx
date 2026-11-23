@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Sans, Pixelify_Sans, Press_Start_2P } from "next/font/google";
+import { Chakra_Petch, IBM_Plex_Sans, Press_Start_2P } from "next/font/google";
 import { site } from "@/lib/content";
 import { TITLE_SEEN_KEY } from "@/lib/title";
 import "./globals.css";
@@ -10,7 +10,9 @@ const pixel = Press_Start_2P({
   variable: "--font-pixel",
 });
 
-const ui = Pixelify_Sans({
+// Squared-off, game-UI feel but readable at small sizes (menus, labels, buttons).
+const ui = Chakra_Petch({
+  weight: ["400", "500", "600"],
   subsets: ["latin"],
   variable: "--font-ui",
 });

@@ -41,7 +41,7 @@
 
 .heroInner {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
   gap: 40px;
   align-items: center;
   padding-block: 64px 80px;
@@ -59,8 +59,9 @@
    gold gradient so every word looks the same. */
 .name {
   margin: 0;
-  font: 400 clamp(20px, 3.3vw, 38px) / 1.25 var(--f-pixel);
+  font: 400 clamp(22px, 3.9vw, 46px) / 1.25 var(--f-pixel);
   white-space: nowrap;
+  word-spacing: -0.45em;
   filter: drop-shadow(4px 4px 0 #2a0f3a);
 }
 
@@ -266,7 +267,7 @@
     padding-block: 28px 60px;
   }
   .name {
-    font-size: min(34px, calc((100vw - 56px) / 13.5));
+    font-size: min(40px, calc((100vw - 56px) / 12.3));
   }
   .head {
     justify-self: center;
