@@ -68,6 +68,7 @@ export const projects: Project[] = [
       "Inspired by classic endless runners. Tap to jump over obstacles and incoming animals, and see how far you can get. Built in Godot as a birthday gift.",
     role: "Solo developer",
     stack: ["Godot", "GDScript", "GDShader"],
+    demo: "https://yesblueue.itch.io/eaindray-go",
     source: "https://github.com/YesBlueue/eaindray-go",
   },
 ];
