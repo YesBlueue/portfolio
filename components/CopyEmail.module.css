@@ -1,0 +1,36 @@
+.box {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 100%;
+  padding: 16px 22px;
+  background: var(--dusk);
+  border: 2px solid var(--line);
+  border-radius: 6px;
+}
+
+.mail {
+  font: 600 clamp(18px, 2.4vw, 24px) var(--f-ui);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.mail:hover {
+  color: var(--gold);
+}
+
+.copy {
+  border: 0;
+  cursor: pointer;
+  font: 400 11px var(--f-pixel);
+  color: var(--night);
+  background: var(--gold);
+  padding: 8px 10px;
+  border-radius: 3px;
+}
+
+.copy:hover {
+  background: #fff0b8;
+}

@@ -1,69 +1,133 @@
-import Image from "next/image";
+import type { CSSProperties } from "react";
+import { CopyEmail } from "@/components/CopyEmail";
+import { Ps1Head } from "@/components/Ps1Head";
+import { ReplayIntro } from "@/components/ReplayIntro";
+import { Stages } from "@/components/Stages";
+import { TitleScreen } from "@/components/TitleScreen";
+import { projects, site } from "@/lib/content";
 import styles from "./page.module.css";
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>
-            To get started, edit the{" "}
-            <code className={styles.code}>page.tsx</code> file.
-          </h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
+    <>
+      <TitleScreen />
+
+      <nav className={styles.nav} aria-label="Main">
+        <div className={`inner ${styles.navInner}`}>
+          <a className={styles.mark} href="#top" aria-label={`${site.name}, back to top`}>
+            {site.initials}
           </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          <ul>
+            <li>
+              <a className="sel" href="#work">
+                Levels
+              </a>
+            </li>
+            <li>
+              <a className="sel" href="#about">
+                Profile
+              </a>
+            </li>
+            <li>
+              <a className="sel" href="#contact">
+                Contact
+              </a>
+            </li>
+          </ul>
         </div>
+      </nav>
+
+      <main>
+        <header className={styles.hero} id="top">
+          <div className={`inner ${styles.heroInner}`}>
+            <div>
+              <p className={styles.kicker}>
+                {site.role} · Portfolio {site.year}
+              </p>
+              <h1 className={styles.name}>{site.name.toUpperCase()}</h1>
+              <p className={styles.lede}>{site.intro}</p>
+              <a className={styles.start} href="#work">
+                PRESS START
+              </a>
+            </div>
+            <figure className={styles.head}>
+              <Ps1Head label={`Low-poly 3D portrait of ${site.name}`} />
+            </figure>
+          </div>
+        </header>
+
+        <section className={styles.block} id="work" aria-labelledby="work-h">
+          <div className="inner">
+            <div className={styles.secHead}>
+              <h2 id="work-h">SELECT STAGE</h2>
+              <span>{projects.length} projects</span>
+            </div>
+            <Stages projects={projects} />
+          </div>
+        </section>
+
+        <section className={styles.block} id="about" aria-labelledby="about-h">
+          <div className="inner">
+            <div className={styles.secHead}>
+              <h2 id="about-h">PROFILE</h2>
+              <span>Player 1</span>
+            </div>
+            <div className={`${styles.about} ${site.skills.length ? "" : styles.aboutSolo}`}>
+              <div>
+                <p className={styles.lead}>{site.about.lead}</p>
+                <p>{site.about.body}</p>
+              </div>
+              {site.skills.length > 0 && (
+                <dl className={styles.stats}>
+                  {site.skills.map((s) => (
+                    <div key={s.label} className={styles.stat}>
+                      <dt>{s.label}</dt>
+                      <dd>
+                        <span className={styles.bar} style={{ "--v": s.value } as CSSProperties} />
+                        <span className="visually-hidden">{Math.round(s.value * 100)} out of 100</span>
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              )}
+            </div>
+          </div>
+        </section>
+
+        <section className={`${styles.block} ${styles.contact}`} id="contact" aria-labelledby="contact-h">
+          <div className="inner">
+            <h2 id="contact-h">CONTINUE?</h2>
+            <p className={styles.sub}>Want to work together, or just say hi? Send me an email.</p>
+            <CopyEmail email={site.email} />
+            <ul className={styles.elsewhere}>
+              <li>
+                <a className="sel" href={site.links.github} target="_blank" rel="noreferrer">
+                  GitHub
+                </a>
+              </li>
+              <li>
+                <a className="sel" href={site.links.linkedin} target="_blank" rel="noreferrer">
+                  LinkedIn
+                </a>
+              </li>
+              <li>
+                <a className="sel" href={site.links.resume} target="_blank" rel="noreferrer">
+                  Résumé
+                </a>
+              </li>
+            </ul>
+          </div>
+        </section>
       </main>
-    </div>
+
+      <footer className={styles.footer}>
+        <div className={`inner ${styles.footInner}`}>
+          <span>
+            © {site.year} {site.name}
+          </span>
+          <ReplayIntro className={styles.replay} />
+        </div>
+      </footer>
+    </>
   );
 }
