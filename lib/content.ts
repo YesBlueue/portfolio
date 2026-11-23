@@ -43,12 +43,13 @@ export const projects: Project[] = [
   {
     slug: "uit-virtual-campus",
     name: "UIT Virtual Campus",
-    pitch: "A campus web app for UIT students, with role-based dashboards and room search.",
+    pitch: "A campus platform for UIT: timetables, room bookings, clubs and events in one place.",
     description:
-      "A web platform for the University of Information Technology. Students sign up into their academic group, then land on a dashboard built for their role: student, club leader or admin. It covers campus room, building and floor search and an admin approvals queue, with a Three.js campus map in progress. I worked across the stack, on both the Next.js frontend and the Spring Boot API behind it.",
+      "A web platform for the University of Information Technology. Students sign up into their academic group and get their timetable, can search every building, floor and room, and can request rooms, which admins approve. Clubs manage members and events, including bookings for the multipurpose hall. Each role (student, club leader, admin) gets its own dashboard, and a Three.js campus map is in progress. I worked across the stack, on the Next.js frontend and the Spring Boot API.",
     role: "Full-stack developer",
-    stack: ["Next.js", "TypeScript", "Spring Boot", "Supabase"],
-    // Both repos are private for now; add demo/source links once there's something public to show.
+    stack: ["Next.js", "TypeScript", "Spring Boot", "Java", "Supabase", "PostgreSQL"],
+    // Public backend repo. The frontend repo (YesBlueue/uit_virtual_campus_frontend) is private.
+    source: "https://github.com/KaungSet178/UIT_Virtual_Campus",
   },
   {
     slug: "mama-wawa",
