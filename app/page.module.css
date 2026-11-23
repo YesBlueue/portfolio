@@ -55,15 +55,21 @@
   text-transform: uppercase;
 }
 
+/* Name on one line, sized to fit its column. Each word carries its own full
+   gold gradient so every word looks the same. */
 .name {
   margin: 0;
-  font: 400 clamp(30px, 5vw, 58px) / 1.25 var(--f-pixel);
+  font: 400 clamp(20px, 3.3vw, 38px) / 1.25 var(--f-pixel);
+  white-space: nowrap;
+  filter: drop-shadow(4px 4px 0 #2a0f3a);
+}
+
+.name span {
+  display: inline-block;
   background: linear-gradient(#fff6c8 0%, #ffcf4a 48%, #e0701c 52%, #ff9e3d 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  filter: drop-shadow(4px 4px 0 #2a0f3a);
-  text-wrap: balance;
 }
 
 .lede {
@@ -258,6 +264,9 @@
   .heroInner {
     grid-template-columns: 1fr;
     padding-block: 28px 60px;
+  }
+  .name {
+    font-size: min(34px, calc((100vw - 56px) / 13.5));
   }
   .head {
     justify-self: center;

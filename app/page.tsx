@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import { Fragment, type CSSProperties } from "react";
 import { CopyEmail } from "@/components/CopyEmail";
 import { Ps1Head } from "@/components/Ps1Head";
 import { ReplayIntro } from "@/components/ReplayIntro";
@@ -44,7 +44,17 @@ export default function Home() {
               <p className={styles.kicker}>
                 {site.role} · Portfolio {site.year}
               </p>
-              <h1 className={styles.name}>{site.name.toUpperCase()}</h1>
+              <h1 className={styles.name}>
+                {site.name
+                  .toUpperCase()
+                  .split(" ")
+                  .map((word, i) => (
+                    <Fragment key={i}>
+                      {i > 0 && " "}
+                      <span>{word}</span>
+                    </Fragment>
+                  ))}
+              </h1>
               <p className={styles.lede}>{site.intro}</p>
               <a className={styles.start} href="#work">
                 PRESS START
