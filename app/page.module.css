@@ -187,12 +187,11 @@
   border-left: 2px solid var(--line);
 }
 
+/* Title on its own line, with the org / date always on the line below. */
 .entryHead {
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 2px 16px;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .entryTitle {
