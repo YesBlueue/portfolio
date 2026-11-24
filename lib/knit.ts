@@ -66,9 +66,8 @@ export function startKnit(canvas: HTMLCanvasElement, hooks: KnitHooks): Knit {
   let total = 1;
   let pulled = 0; // px of yarn pulled by hand
   let auto = false;
-  let rate = 0;
+  let autoT = 0; // seconds since the unravelling began
   let done = false;
-  let touched = false;
 
   const P = Array.from({ length: N + 1 }, () => ({ x: 0, y: 0, px: 0, py: 0 }));
   let ropeLen = 200;
@@ -301,42 +300,55 @@ export function startKnit(canvas: HTMLCanvasElement, hooks: KnitHooks): Knit {
   function startAuto() {
     if (auto || done) return;
     auto = true;
+    autoT = 0;
     grab = -1;
-    rate = Math.max(cols * 2.2, 90);
     hooks.onAuto();
+  }
+
+  /**
+   * How hard the invisible hand is pulling right now (0 to 1). It starts as a few distinct
+   * hand-over-hand tugs, then the tugs blur together into one steady pull.
+   */
+  function tugAt(t: number) {
+    const pulse = Math.pow(0.5 + 0.5 * Math.sin(t * Math.PI * 2 * 1.8 - Math.PI / 2), 2);
+    const steady = Math.min(1, t / 1.4) ** 2;
+    return pulse + (1 - pulse) * steady;
+  }
+
+  /** Rows unravelled per second: slow, jerky tugs at first, then a rush that tears through. */
+  function rowsPerSecond(t: number) {
+    return Math.min(60, (0.9 + 11 * t * t) * (0.12 + 0.88 * tugAt(t)));
   }
 
   // ---------- physics ----------
 
-  let tick = 0;
 
   function step() {
-    tick++;
     const a = anchor();
     P[0].x = P[0].px = a.x;
     P[0].y = P[0].py = a.y;
 
     let pin = -1;
     if (auto) {
-      rate *= 1.055;
-      eaten = Math.min(total, eaten + rate / 60);
-      // An invisible hand reels the yarn off past the top-right corner.
+      autoT += 1 / 60;
+      const tug = tugAt(autoT);
+      eaten = Math.min(total, eaten + (rowsPerSecond(autoT) * cols) / 60);
+      // An invisible hand reels the yarn off past the top-right corner. Each early tug
+      // yanks it up and out, pulling the yarn taut; between tugs it goes slack and swings.
       pin = N;
-      const rx = W + 60, ry = -60;
+      const early = 1 - Math.min(1, autoT / 1.4);
+      const yank = tug * early * 110;
+      const rx = W + 60 + yank * 0.5, ry = -60 - yank;
       P[N].x = rx;
       P[N].y = ry;
-      ropeLen = Math.hypot(rx - a.x, ry - a.y) * 1.1 + 40;
+      ropeLen = Math.hypot(rx - a.x, ry - a.y) * (1.06 + 0.4 * (1 - tug) * early) + 40;
     } else if (grab >= 0) {
       pin = grab;
       P[grab].x += (target.x - P[grab].x) * 0.6;
       P[grab].y += (target.y - P[grab].y) * 0.6;
-    } else if (!touched && !reduced && tick % 210 === 0) {
-      // Every few seconds, a little twitch, so the eye finds it.
-      P[N].px -= (tick / 210) % 2 ? 7 : -7;
     }
 
     const seg = ropeLen / N;
-    const sway = reduced || touched ? 0 : Math.sin(tick * 0.03) * 0.015;
     for (let i = 1; i <= N; i++) {
       if (i === pin) continue;
       const p = P[i];
@@ -344,7 +356,7 @@ export function startKnit(canvas: HTMLCanvasElement, hooks: KnitHooks): Knit {
       const vy = (p.y - p.py) * 0.985;
       p.px = p.x;
       p.py = p.y;
-      p.x += vx + sway * (i / N);
+      p.x += vx;
       p.y += vy + 0.32;
     }
     for (let k = 0; k < 24; k++) {
@@ -500,7 +512,8 @@ export function startKnit(canvas: HTMLCanvasElement, hooks: KnitHooks): Knit {
       for (let c = eatA; c < eatB; c++) loop(c, r + 1);
     }
 
-    drawYarn(a.color);
+    // The loose end only shows once someone (or something) is pulling it.
+    if (auto || grab >= 0) drawYarn(a.color);
     hooks.onFrame(P[N].x, P[N].y, eaten >= total ? H : Math.floor(eaten / cols) * sh);
   }
 
@@ -517,7 +530,6 @@ export function startKnit(canvas: HTMLCanvasElement, hooks: KnitHooks): Knit {
         best = i;
       }
     }
-    touched = true;
     if (best < 0) {
       // Missed: flick the yarn toward the press so it's obvious where it is.
       P[N].px -= Math.sign(e.clientX - P[N].x) * 6;
@@ -573,9 +585,6 @@ export function startKnit(canvas: HTMLCanvasElement, hooks: KnitHooks): Knit {
   // ---------- loop ----------
 
   build();
-  // Start with a few stitches already pulled out, so the loose end hangs clear of the edge.
-  eaten = Math.round(cols * 0.12) + 2;
-  build();
   for (let i = 0; i < 90; i++) step(); // let the yarn settle before the first frame
   draw();
 
@@ -596,7 +605,6 @@ export function startKnit(canvas: HTMLCanvasElement, hooks: KnitHooks): Knit {
 
   return {
     unravel() {
-      touched = true;
       if (reduced) {
         if (!done) {
           done = true;
