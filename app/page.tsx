@@ -120,11 +120,13 @@ export default function Home() {
                   LinkedIn
                 </a>
               </li>
-              <li>
-                <a className="sel" href={site.links.resume} target="_blank" rel="noreferrer">
-                  Résumé
-                </a>
-              </li>
+              {site.links.resume && (
+                <li>
+                  <a className="sel" href={site.links.resume} target="_blank" rel="noreferrer">
+                    Résumé
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
         </section>

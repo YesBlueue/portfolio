@@ -20,11 +20,12 @@ export const site = {
   year: 2026,
   intro:
     "I build things for the web. [One more line about what you do and what you care about.]",
-  email: "[your@email.com]",
+  email: "thawtunthaw252@gmail.com",
   links: {
-    github: "#", // [https://github.com/your-handle]
-    linkedin: "#", // [https://www.linkedin.com/in/your-name]
-    resume: "#", // [link to your résumé PDF, e.g. /resume.pdf]
+    github: "https://github.com/YesBlueue",
+    linkedin: "https://www.linkedin.com/in/thaw-thaw-tun/",
+    // Add a résumé link (e.g. "/resume.pdf" with the file in /public) to show it on the page.
+    resume: undefined as string | undefined,
   },
   about: {
     lead: "[One sentence about who you are and what drives your work.]",
