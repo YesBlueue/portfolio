@@ -8,16 +8,37 @@ import { Zipper } from "@/components/Zipper";
 import { projects, site } from "@/lib/content";
 import styles from "./page.module.css";
 
-// Each project card gets its own cloth (the pocket) and thread color (the button and
-// the chips), in order. `x` is the thread sewing the button on.
+// Each project card gets its own cloth (the pocket) and thread color (the button, the
+// chips and the links), in order. `x` is the thread sewing the button on; `ink` is the
+// text color that reads well on the thread color.
 const CLOTHS = [
-  { fabric: "flannel", thread: "var(--rust)", x: "var(--cream)" },
-  { fabric: "corduroy", thread: "var(--moss)", x: "var(--cream)" },
-  { fabric: "tweed", thread: "var(--camel)", x: "var(--cream)" },
-  { fabric: "twill", thread: "var(--wool-navy)", x: "var(--cream)" },
-  { fabric: "gingham", thread: "var(--mustard)", x: "var(--cocoa)" },
-  { fabric: "herringbone", thread: "var(--cocoa-soft)", x: "var(--cream)" },
+  { fabric: "flannel", thread: "var(--rust)", x: "var(--cream)", ink: "var(--cream)" },
+  { fabric: "corduroy", thread: "var(--moss)", x: "var(--cream)", ink: "var(--cream)" },
+  { fabric: "tweed", thread: "var(--camel)", x: "var(--cream)", ink: "var(--cocoa)" },
+  { fabric: "twill", thread: "var(--wool-navy)", x: "var(--cream)", ink: "var(--cream)" },
+  { fabric: "gingham", thread: "var(--mustard)", x: "var(--cocoa)", ink: "var(--cocoa)" },
+  { fabric: "herringbone", thread: "var(--cocoa-soft)", x: "var(--cream)", ink: "var(--cream)" },
 ];
+
+/** The card's links: the first is the main one (filled), the rest are stitched outlines. */
+function cardLinks(p: { demo?: string; source?: string }) {
+  return [
+    p.demo && { href: p.demo, label: "Play it", icon: "play" as const },
+    p.source && { href: p.source, label: "Source", icon: "code" as const },
+  ].filter((l): l is { href: string; label: string; icon: "play" | "code" } => !!l);
+}
+
+function LinkIcon({ icon }: { icon: "play" | "code" }) {
+  return icon === "play" ? (
+    <svg viewBox="0 0 16 16" aria-hidden="true">
+      <path d="M5 3.5v9l7.5-4.5z" fill="currentColor" />
+    </svg>
+  ) : (
+    <svg viewBox="0 0 16 16" aria-hidden="true">
+      <path d="M5.5 4 2 8l3.5 4M10.5 4 14 8l-3.5 4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
 
 export default function Home() {
   return (
@@ -89,7 +110,7 @@ export default function Home() {
                   key={p.slug}
                   className={`${styles.card} ${p.placeholder ? styles.saved : ""}`}
                   id={p.slug}
-                  style={{ "--thread": cloth.thread, "--x": cloth.x } as CSSProperties}
+                  style={{ "--thread": cloth.thread, "--x": cloth.x, "--ink": cloth.ink } as CSSProperties}
                 >
                   {/* A faint running stitch around the card, passing under the pocket. */}
                   <svg className={styles.stitch} aria-hidden="true">
@@ -132,18 +153,24 @@ export default function Home() {
                       ))}
                     </div>
                   )}
-                  {(p.demo || p.source) && (
-                    <div className={styles.links}>
-                      {p.demo && (
-                        <a href={p.demo} target="_blank" rel="noreferrer">
-                          Play it
+                  {cardLinks(p).length > 0 && (
+                    <div className={styles.cardLinks}>
+                      {cardLinks(p).map((l, n) => (
+                        <a
+                          key={l.label}
+                          className={`${styles.linkPatch} ${n === 0 ? styles.mainLink : ""}`}
+                          href={l.href}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          <LinkIcon icon={l.icon} />
+                          {l.label}
+                          <svg className={styles.out} viewBox="0 0 12 12" aria-hidden="true">
+                            <path d="M3.5 8.5 8.5 3.5M4.5 3.5h4v4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                          <span className="sr-only"> (opens in a new tab)</span>
                         </a>
-                      )}
-                      {p.source && (
-                        <a href={p.source} target="_blank" rel="noreferrer">
-                          Source
-                        </a>
-                      )}
+                      ))}
                     </div>
                   )}
                 </article>
