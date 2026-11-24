@@ -5,6 +5,12 @@
 // Coordinates are in the photo's own pixels. The tie layer extends PAD_X pixels to each
 // side and down to LAYER_H times the photo height, so the tie can hang out of the frame.
 //
+// Look: matched to the tie in the portrait. A heathered chocolate-brown weave with thin
+// double stripes (a pale pinkish-cream line and a dimmer twin) running diagonally from
+// upper left to lower right. The fabric is texture-mapped along the chain, so the stripes
+// bend with the tie, and it is shaded as a slightly rounded blade with creases where it
+// bends, a soft shadow cast on whatever is behind it, and a knot with a dimple under it.
+//
 // The current stand-in photo has a tie printed in it, so we paint shirt fabric over that
 // area first. With a final photo taken without a tie, set COVER_PRINTED_TIE to false.
 
@@ -19,33 +25,130 @@ const N = 16; // points along the blade
 const SEG = 40; // spacing between points
 const STEP_MS = 1000 / 60;
 
+// Blade width, measured from the photo: about 36 px half-width under the knot,
+// widening ~0.1 px per px down the tie.
+const MAX_HW = 76;
+const halfWidth = (i: number) => Math.min(MAX_HW, 36 + i * SEG * 0.095);
+const TIP_LEN = 70;
+
+// Fabric texture, in "tie space": u across the blade (centred), v down from the knot.
+const TEX_W = MAX_HW * 2 + 8;
+const TEX_H = (N - 1) * SEG + TIP_LEN + 20;
+const TEX_SCALE = 2; // texture pixels per tie-space pixel
+
 type Pt = { x: number; y: number; px: number; py: number };
 type Vec = { x: number; y: number };
+type P2 = [number, number];
 
-function makeFabric(ctx: CanvasRenderingContext2D) {
-  // Brown silk with cream and copper diagonal stripes.
-  const swatch = document.createElement("canvas");
-  swatch.width = swatch.height = 48;
-  const s = swatch.getContext("2d");
-  if (!s) return "#5a3322";
-  s.fillStyle = "#5a3322";
-  s.fillRect(0, 0, 48, 48);
-  s.save();
-  s.translate(24, 24);
-  s.rotate(-Math.PI / 4);
-  s.translate(-48, -48);
-  for (let x = 0; x < 96; x += 24) {
-    s.fillStyle = "#e9d8c2";
-    s.fillRect(x, 0, 4, 96);
-    s.fillStyle = "#a8653f";
-    s.fillRect(x + 8, 0, 2, 96);
+/** Builds the woven fabric: heathered brown base, twill, and the diagonal double stripes. */
+function makeFabric(): HTMLCanvasElement {
+  const tex = document.createElement("canvas");
+  tex.width = Math.ceil(TEX_W * TEX_SCALE);
+  tex.height = Math.ceil(TEX_H * TEX_SCALE);
+  const g = tex.getContext("2d");
+  if (!g) return tex;
+  const W = tex.width;
+  const H = tex.height;
+  let seed = 11;
+  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+
+  // Base colour, sampled from the photo and lifted slightly (the photo is in shade).
+  g.fillStyle = "rgb(74,52,44)";
+  g.fillRect(0, 0, W, H);
+
+  // Heather: short flecks of lighter and darker yarn, mostly following the twill.
+  for (let k = 0; k < (W * H) / 9; k++) {
+    const x = rnd() * W;
+    const y = rnd() * H;
+    const len = 2 + rnd() * 5;
+    const r = rnd();
+    g.strokeStyle =
+      r < 0.42 ? "rgba(40,26,22,.28)" : r < 0.8 ? "rgba(112,84,74,.26)" : "rgba(140,108,96,.22)";
+    g.lineWidth = 1 + rnd() * 0.8;
+    g.beginPath();
+    g.moveTo(x, y);
+    g.lineTo(x + len * 0.7, y - len * 0.7);
+    g.stroke();
   }
-  s.restore();
-  for (let k = 0; k < 260; k++) {
-    s.fillStyle = Math.random() < 0.5 ? "rgba(0,0,0,.08)" : "rgba(255,255,255,.05)";
-    s.fillRect(Math.random() * 48, Math.random() * 48, 1, 1);
+
+  // Twill: very fine diagonal ribs.
+  g.save();
+  g.globalAlpha = 0.07;
+  g.strokeStyle = "#fff";
+  g.lineWidth = 1;
+  for (let s = -H; s < W + H; s += 4) {
+    g.beginPath();
+    g.moveTo(s, H);
+    g.lineTo(s + H, 0);
+    g.stroke();
   }
-  return ctx.createPattern(swatch, "repeat") ?? "#5a3322";
+  g.restore();
+
+  // Double stripes, running upper-left to lower-right (dx/dy ≈ 0.8, measured from the photo),
+  // ~62 px apart measured across the stripe.
+  const dir = { x: 0.8 / Math.hypot(0.8, 1), y: 1 / Math.hypot(0.8, 1) };
+  const perp = { x: dir.y, y: -dir.x };
+  const spacing = 62 * TEX_SCALE;
+  const reach = W + H;
+  for (let s = -reach; s < reach; s += spacing) {
+    const lines: [number, number, string][] = [
+      [0, 3.2, "rgba(218,188,174,.96)"],
+      [7, 2.2, "rgba(190,158,146,.9)"],
+    ];
+    for (const [off, width, color] of lines) {
+      const o = s + off * TEX_SCALE;
+      const cx = W / 2 + perp.x * o;
+      const cy = H / 2 + perp.y * o;
+      g.strokeStyle = color;
+      g.lineWidth = width * TEX_SCALE * 0.85;
+      g.beginPath();
+      g.moveTo(cx - dir.x * reach, cy - dir.y * reach);
+      g.lineTo(cx + dir.x * reach, cy + dir.y * reach);
+      g.stroke();
+    }
+  }
+
+  // Weave the stripes in: a light pass of flecks over everything so they don't look printed on.
+  for (let k = 0; k < (W * H) / 30; k++) {
+    const x = rnd() * W;
+    const y = rnd() * H;
+    g.fillStyle = rnd() < 0.5 ? "rgba(30,18,14,.22)" : "rgba(255,235,220,.06)";
+    g.fillRect(x, y, 1 + rnd() * 1.5, 1);
+  }
+  return tex;
+}
+
+/** Affine map from three texture points to three canvas points (in the current transform). */
+function texTri(ctx: CanvasRenderingContext2D, tex: HTMLCanvasElement, src: [P2, P2, P2], dst: [P2, P2, P2]) {
+  const [[u0, v0], [u1, v1], [u2, v2]] = src;
+  const [[x0, y0], [x1, y1], [x2, y2]] = dst;
+  const det = (u1 - u0) * (v2 - v0) - (u2 - u0) * (v1 - v0);
+  if (!det) return;
+  const a = ((x1 - x0) * (v2 - v0) - (x2 - x0) * (v1 - v0)) / det;
+  const b = ((y1 - y0) * (v2 - v0) - (y2 - y0) * (v1 - v0)) / det;
+  const c = ((x2 - x0) * (u1 - u0) - (x1 - x0) * (u2 - u0)) / det;
+  const d = ((y2 - y0) * (u1 - u0) - (y1 - y0) * (u2 - u0)) / det;
+  const e = x0 - a * u0 - c * v0;
+  const f = y0 - b * u0 - d * v0;
+  // Grow the clip a little so neighbouring triangles don't leave hairline seams.
+  const mx = (x0 + x1 + x2) / 3;
+  const my = (y0 + y1 + y2) / 3;
+  const grow = (x: number, y: number): P2 => {
+    const dx = x - mx;
+    const dy = y - my;
+    const l = Math.hypot(dx, dy) || 1;
+    return [x + (dx / l) * 1.2, y + (dy / l) * 1.2];
+  };
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(...grow(x0, y0));
+  ctx.lineTo(...grow(x1, y1));
+  ctx.lineTo(...grow(x2, y2));
+  ctx.closePath();
+  ctx.clip();
+  ctx.transform(a, b, c, d, e, f);
+  ctx.drawImage(tex, 0, 0);
+  ctx.restore();
 }
 
 /** Starts the tie on `canvas`, positioned relative to `photo`. Returns a cleanup function. */
@@ -53,7 +156,8 @@ export function startTie(canvas: HTMLCanvasElement, photo: HTMLElement): () => v
   const ctx = canvas.getContext("2d");
   if (!ctx) return () => {};
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const fabric = makeFabric(ctx);
+  const tex = makeFabric();
+  const knotFabric = ctx.createPattern(tex, "repeat");
   const pts: Pt[] = Array.from({ length: N }, (_, i) => ({
     x: KNOT.x,
     y: KNOT.y + i * SEG,
@@ -81,7 +185,7 @@ export function startTie(canvas: HTMLCanvasElement, photo: HTMLElement): () => v
   };
   const nearest = (m: Vec) => {
     let best = -1;
-    let bd = 80;
+    let bd = 85;
     pts.forEach((p, i) => {
       if (i < 2) return;
       const d = Math.hypot(p.x - m.x, p.y - m.y);
@@ -175,7 +279,53 @@ export function startTie(canvas: HTMLCanvasElement, photo: HTMLElement): () => v
     prev = mouse;
   }
 
-  const halfWidth = (i: number) => 44 + (i / (N - 1)) * 30;
+  /** Edges of the blade: left/right points along the chain, the tip, and segment angles. */
+  function outline() {
+    const L: P2[] = [];
+    const R: P2[] = [];
+    const ang: number[] = [];
+    for (let i = 0; i < N; i++) {
+      const a = pts[Math.max(0, i - 1)];
+      const b = pts[Math.min(N - 1, i + 1)];
+      let tx = b.x - a.x;
+      let ty = b.y - a.y;
+      const tl = Math.hypot(tx, ty) || 1;
+      tx /= tl;
+      ty /= tl;
+      ang.push(Math.atan2(tx, ty)); // 0 when hanging straight down
+      const w = halfWidth(i);
+      L.push([pts[i].x - ty * w, pts[i].y + tx * w]);
+      R.push([pts[i].x + ty * w, pts[i].y - tx * w]);
+    }
+    const end = pts[N - 1];
+    const before = pts[N - 2];
+    let ex = end.x - before.x;
+    let ey = end.y - before.y;
+    const el = Math.hypot(ex, ey) || 1;
+    ex /= el;
+    ey /= el;
+    const tip: P2 = [end.x + ex * TIP_LEN, end.y + ey * TIP_LEN];
+    return { L, R, tip, ang };
+  }
+
+  function bladePath(c: CanvasRenderingContext2D, L: P2[], R: P2[], tip: P2) {
+    c.beginPath();
+    c.moveTo(L[0][0], L[0][1]);
+    for (let i = 1; i < N; i++) c.lineTo(L[i][0], L[i][1]);
+    c.lineTo(tip[0], tip[1]);
+    for (let i = N - 1; i >= 0; i--) c.lineTo(R[i][0], R[i][1]);
+    c.closePath();
+  }
+
+  function knotPath(c: CanvasRenderingContext2D) {
+    c.beginPath();
+    c.moveTo(551, 886);
+    c.quadraticCurveTo(603, 872, 655, 886);
+    c.quadraticCurveTo(648, 934, 634, 972);
+    c.quadraticCurveTo(603, 984, 572, 972);
+    c.quadraticCurveTo(558, 934, 551, 886);
+    c.closePath();
+  }
 
   function draw() {
     if (!ctx) return;
@@ -191,12 +341,13 @@ export function startTie(canvas: HTMLCanvasElement, photo: HTMLElement): () => v
       ctx.clip();
       ctx.filter = "blur(3px)";
       ctx.beginPath();
-      ctx.moveTo(556, 955);
-      ctx.lineTo(650, 955);
-      ctx.lineTo(672, IMG_H);
-      ctx.lineTo(530, IMG_H);
+      // Traced from the printed tie's edges (565–644 at y 1040, 536–664 at the bottom).
+      ctx.moveTo(568, 958);
+      ctx.lineTo(640, 958);
+      ctx.lineTo(668, IMG_H);
+      ctx.lineTo(534, IMG_H);
       ctx.closePath();
-      const shirt = ctx.createLinearGradient(530, 0, 672, 0);
+      const shirt = ctx.createLinearGradient(534, 0, 668, 0);
       shirt.addColorStop(0, "#1f2f58");
       shirt.addColorStop(0.5, "#273b6c");
       shirt.addColorStop(1, "#1d2c52");
@@ -215,78 +366,160 @@ export function startTie(canvas: HTMLCanvasElement, photo: HTMLElement): () => v
       ctx.filter = "none";
     }
 
-    // Blade outline from the chain.
-    const L: [number, number][] = [];
-    const R: [number, number][] = [];
-    for (let i = 0; i < N; i++) {
-      const a = pts[Math.max(0, i - 1)];
-      const b = pts[Math.min(N - 1, i + 1)];
-      let tx = b.x - a.x;
-      let ty = b.y - a.y;
-      const tl = Math.hypot(tx, ty) || 1;
-      tx /= tl;
-      ty /= tl;
-      const w = halfWidth(i);
-      L.push([pts[i].x - ty * w, pts[i].y + tx * w]);
-      R.push([pts[i].x + ty * w, pts[i].y - tx * w]);
+    const { L, R, tip, ang } = outline();
+
+    // 1. Cast shadows: a soft one falling down-right, and a tight contact shadow.
+    ctx.save();
+    ctx.filter = "blur(14px)";
+    ctx.translate(14, 22);
+    bladePath(ctx, L, R, tip);
+    ctx.fillStyle = "rgba(12,6,4,.5)";
+    ctx.fill();
+    ctx.restore();
+    ctx.save();
+    ctx.filter = "blur(3px)";
+    ctx.translate(3, 5);
+    bladePath(ctx, L, R, tip);
+    ctx.fillStyle = "rgba(10,5,3,.35)";
+    ctx.fill();
+    ctx.restore();
+    ctx.filter = "none";
+
+    // 2. The fabric, mapped segment by segment so the stripes follow the tie.
+    const U = (u: number) => (u + TEX_W / 2) * TEX_SCALE;
+    const V = (v: number) => (v + 6) * TEX_SCALE;
+    for (let i = 0; i < N - 1; i++) {
+      const w0 = halfWidth(i);
+      const w1 = halfWidth(i + 1);
+      const v0 = i * SEG;
+      const v1 = (i + 1) * SEG;
+      texTri(ctx, tex, [[U(-w0), V(v0)], [U(w0), V(v0)], [U(w1), V(v1)]], [L[i], R[i], R[i + 1]]);
+      texTri(ctx, tex, [[U(-w0), V(v0)], [U(w1), V(v1)], [U(-w1), V(v1)]], [L[i], R[i + 1], L[i + 1]]);
     }
-    const end = pts[N - 1];
-    const before = pts[N - 2];
-    let ex = end.x - before.x;
-    let ey = end.y - before.y;
-    const el = Math.hypot(ex, ey) || 1;
-    ex /= el;
-    ey /= el;
-    const tip: [number, number] = [end.x + ex * 58, end.y + ey * 58];
+    const wEnd = halfWidth(N - 1);
+    const vEnd = (N - 1) * SEG;
+    texTri(ctx, tex, [[U(-wEnd), V(vEnd)], [U(wEnd), V(vEnd)], [U(0), V(vEnd + TIP_LEN)]], [L[N - 1], R[N - 1], tip]);
 
+    // 3. Shading, clipped to the blade.
     ctx.save();
-    ctx.shadowColor = "rgba(0,0,0,.35)";
-    ctx.shadowBlur = 18;
-    ctx.shadowOffsetX = 6;
-    ctx.shadowOffsetY = 8;
-    ctx.beginPath();
-    ctx.moveTo(L[0][0], L[0][1]);
-    for (let i = 1; i < N; i++) ctx.lineTo(L[i][0], L[i][1]);
-    ctx.lineTo(tip[0], tip[1]);
-    for (let i = N - 1; i >= 0; i--) ctx.lineTo(R[i][0], R[i][1]);
-    ctx.closePath();
-    ctx.fillStyle = fabric;
-    ctx.fill();
-    ctx.restore();
-
-    // Soft shading across the blade so it reads as cloth.
-    ctx.save();
+    bladePath(ctx, L, R, tip);
     ctx.clip();
-    const mid = pts[Math.floor(N / 2)];
-    const shade = ctx.createLinearGradient(mid.x - 70, 0, mid.x + 70, 0);
-    shade.addColorStop(0, "rgba(0,0,0,.35)");
-    shade.addColorStop(0.45, "rgba(255,240,220,.08)");
-    shade.addColorStop(1, "rgba(0,0,0,.3)");
-    ctx.fillStyle = shade;
-    ctx.fillRect(-PAD_X, 0, IMG_W + PAD_X * 2, IMG_H * LAYER_H);
+
+    // 3a. Rounded cross-section: dark edges, a soft highlight left of centre (light from the top left).
+    for (let i = 0; i < N; i++) {
+      const a = L[i];
+      const b = R[i];
+      const next = i < N - 1 ? [L[i + 1], R[i + 1]] : [tip, tip];
+      const gr = ctx.createLinearGradient(a[0], a[1], b[0], b[1]);
+      gr.addColorStop(0, "rgba(10,5,3,.55)");
+      gr.addColorStop(0.12, "rgba(10,5,3,.16)");
+      gr.addColorStop(0.32, "rgba(255,236,222,.13)");
+      gr.addColorStop(0.5, "rgba(255,236,222,.04)");
+      gr.addColorStop(0.78, "rgba(10,5,3,.12)");
+      gr.addColorStop(1, "rgba(10,5,3,.5)");
+      ctx.fillStyle = gr;
+      ctx.beginPath();
+      ctx.moveTo(a[0], a[1]);
+      ctx.lineTo(b[0], b[1]);
+      ctx.lineTo(next[1][0], next[1][1]);
+      ctx.lineTo(next[0][0], next[0][1]);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    // 3b. Light by orientation, and creases where the blade bends.
+    for (let i = 0; i < N - 1; i++) {
+      const tilt = ang[i]; // >0 swings right
+      const bend = ang[i + 1] - ang[i];
+      const quad = () => {
+        ctx.beginPath();
+        ctx.moveTo(L[i][0], L[i][1]);
+        ctx.lineTo(R[i][0], R[i][1]);
+        ctx.lineTo(R[i + 1][0], R[i + 1][1]);
+        ctx.lineTo(L[i + 1][0], L[i + 1][1]);
+        ctx.closePath();
+      };
+      const lit = -Math.sin(tilt) * 0.22;
+      if (Math.abs(lit) > 0.01) {
+        quad();
+        ctx.fillStyle = lit > 0 ? `rgba(255,236,222,${(lit * 0.6).toFixed(3)})` : `rgba(10,5,3,${(-lit).toFixed(3)})`;
+        ctx.fill();
+      }
+      const crease = Math.min(0.45, Math.abs(bend) * 2.2);
+      if (crease > 0.02) {
+        const m = [(L[i + 1][0] + R[i + 1][0]) / 2, (L[i + 1][1] + R[i + 1][1]) / 2];
+        const rg = ctx.createRadialGradient(m[0], m[1], 0, m[0], m[1], halfWidth(i + 1) * 1.1);
+        rg.addColorStop(0, `rgba(10,5,3,${crease.toFixed(3)})`);
+        rg.addColorStop(1, "rgba(10,5,3,0)");
+        ctx.fillStyle = rg;
+        ctx.fillRect(m[0] - 120, m[1] - 120, 240, 240);
+      }
+    }
+
+    // 3c. Dimple just under the knot.
+    const dim = ctx.createRadialGradient(KNOT.x, KNOT.y + 6, 2, KNOT.x, KNOT.y + 26, 46);
+    dim.addColorStop(0, "rgba(10,5,3,.5)");
+    dim.addColorStop(1, "rgba(10,5,3,0)");
+    ctx.fillStyle = dim;
+    ctx.beginPath();
+    ctx.moveTo(KNOT.x - 26, KNOT.y);
+    ctx.quadraticCurveTo(KNOT.x, KNOT.y + 62, KNOT.x + 26, KNOT.y);
+    ctx.closePath();
+    ctx.fill();
     ctx.restore();
 
-    // The knot stays put under the collar.
-    ctx.save();
+    // 3d. Edges: a thin dark rim and a faint highlight on the lit side.
+    bladePath(ctx, L, R, tip);
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = "rgba(28,16,12,.65)";
+    ctx.lineWidth = 2;
+    ctx.stroke();
     ctx.beginPath();
-    ctx.moveTo(560, 892);
-    ctx.lineTo(646, 892);
-    ctx.lineTo(630, 972);
-    ctx.lineTo(576, 972);
-    ctx.closePath();
-    ctx.shadowColor = "rgba(0,0,0,.35)";
-    ctx.shadowBlur = 10;
-    ctx.shadowOffsetY = 4;
-    ctx.fillStyle = fabric;
-    ctx.fill();
-    ctx.shadowColor = "transparent";
-    const kshade = ctx.createLinearGradient(0, 892, 0, 972);
-    kshade.addColorStop(0, "rgba(0,0,0,.35)");
-    kshade.addColorStop(0.5, "rgba(255,235,210,.08)");
-    kshade.addColorStop(1, "rgba(0,0,0,.25)");
-    ctx.fillStyle = kshade;
+    ctx.moveTo(L[0][0] + 3, L[0][1]);
+    for (let i = 1; i < N; i++) ctx.lineTo(L[i][0] + 3, L[i][1]);
+    ctx.strokeStyle = "rgba(255,230,214,.12)";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // 4. The knot: rounded, with its own shadow on the blade and the shirt.
+    ctx.save();
+    knotPath(ctx);
+    ctx.shadowColor = "rgba(8,4,2,.5)";
+    ctx.shadowBlur = 14;
+    ctx.shadowOffsetY = 6;
+    ctx.fillStyle = "rgb(74,52,44)";
     ctx.fill();
     ctx.restore();
+
+    ctx.save();
+    knotPath(ctx);
+    ctx.clip();
+    if (knotFabric) {
+      // The knot wraps across the tie, so its stripes sit at a different angle.
+      knotFabric.setTransform(new DOMMatrix().translate(560, 880).rotate(-58).scale(1 / TEX_SCALE));
+      ctx.fillStyle = knotFabric;
+      ctx.fillRect(540, 870, 130, 120);
+    }
+    // Rounded volume: dark under the collar, lighter in the middle, dark at the sides.
+    const kv = ctx.createLinearGradient(0, 884, 0, 978);
+    kv.addColorStop(0, "rgba(8,4,2,.6)");
+    kv.addColorStop(0.3, "rgba(8,4,2,.08)");
+    kv.addColorStop(0.55, "rgba(255,236,222,.12)");
+    kv.addColorStop(1, "rgba(8,4,2,.35)");
+    ctx.fillStyle = kv;
+    ctx.fillRect(540, 870, 130, 120);
+    const kh = ctx.createLinearGradient(556, 0, 650, 0);
+    kh.addColorStop(0, "rgba(8,4,2,.55)");
+    kh.addColorStop(0.3, "rgba(8,4,2,0)");
+    kh.addColorStop(0.7, "rgba(8,4,2,0)");
+    kh.addColorStop(1, "rgba(8,4,2,.5)");
+    ctx.fillStyle = kh;
+    ctx.fillRect(540, 870, 130, 120);
+    ctx.restore();
+    knotPath(ctx);
+    ctx.strokeStyle = "rgba(28,16,12,.6)";
+    ctx.lineWidth = 2;
+    ctx.stroke();
   }
 
   resize();
