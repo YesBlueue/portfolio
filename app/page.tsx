@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { CopyEmail } from "@/components/CopyEmail";
 import { Intro } from "@/components/Intro";
 import { Portrait } from "@/components/Portrait";
@@ -6,8 +7,14 @@ import { Zipper } from "@/components/Zipper";
 import { projects, site } from "@/lib/content";
 import styles from "./page.module.css";
 
-// Badge colors for the project numbers, in order.
-const BADGES = ["var(--rust)", "var(--moss)", "var(--camel)", "var(--wool-navy)"];
+// Each project card gets its own cloth (the band across the top) and thread color (the
+// button, the stitching and the chips), in order.
+const CLOTHS = [
+  { fabric: "flannel", thread: "var(--rust)" },
+  { fabric: "corduroy", thread: "var(--moss)" },
+  { fabric: "tweed", thread: "var(--camel)" },
+  { fabric: "twill", thread: "var(--wool-navy)" },
+];
 
 export default function Home() {
   return (
@@ -72,13 +79,35 @@ export default function Home() {
               <span>Things I&apos;ve built</span>
             </div>
             <div className={styles.cards}>
-              {projects.map((p, i) => (
-                <article key={p.slug} className={styles.card} id={p.slug}>
+              {projects.map((p, i) => {
+                const cloth = CLOTHS[i % CLOTHS.length];
+                return (
+                <article
+                  key={p.slug}
+                  className={styles.card}
+                  id={p.slug}
+                  style={{ "--thread": cloth.thread } as CSSProperties}
+                >
+                  {/* The stitching around the card: faint at rest, sewn in with colored
+                      thread on hover (the mask draws it along the path). */}
+                  <svg className={styles.stitch} aria-hidden="true">
+                    <defs>
+                      <mask id={`stitch-${p.slug}`} maskUnits="userSpaceOnUse" x="0" y="0" width="100%" height="100%">
+                        <rect className={styles.stitchReveal} pathLength={1} />
+                      </mask>
+                    </defs>
+                    <rect className={styles.stitchRest} />
+                    <rect className={styles.stitchSewn} mask={`url(#stitch-${p.slug})`} />
+                  </svg>
+                  <div className={styles.swatch} aria-hidden="true">
+                    <div data-fabric={cloth.fabric} />
+                  </div>
                   <div className={styles.cardTop}>
-                    <span className={styles.num} style={{ background: BADGES[i % BADGES.length] }}>
-                      {String(i + 1).padStart(2, "0")}
+                    <span className={styles.button} aria-hidden="true" />
+                    <span className={styles.kind}>
+                      <span className={styles.no}>No. {String(i + 1).padStart(2, "0")}</span>
+                      {p.kind}
                     </span>
-                    <span className={styles.kind}>{p.kind}</span>
                   </div>
                   <h3>{p.name}</h3>
                   <p className={styles.pitch}>{p.pitch}</p>
@@ -104,7 +133,8 @@ export default function Home() {
                     </div>
                   )}
                 </article>
-              ))}
+                );
+              })}
             </div>
           </div>
         </section>

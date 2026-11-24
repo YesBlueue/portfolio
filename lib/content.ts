@@ -79,16 +79,6 @@ export const projects: Project[] = [
     source: "https://github.com/KaungSet178/UIT_Virtual_Campus",
   },
   {
-    slug: "assistive-gloves",
-    name: "Smart Communication Gloves",
-    kind: "Hardware",
-    pitch: "Two gloves that turn sign gestures into speech, and speech into live captions.",
-    description:
-      "An assistive prototype for deaf and mute users. Gesture shortcuts and gesture-alphabet typing (using a custom UIT Schema for Alphabet Interchange) are spoken aloud, and live speech-to-text captions show up on a screen on the wrist.",
-    role: "Hardware & software prototyping",
-    stack: ["Arduino", "Raspberry Pi", "Python", "eSpeak", "Electronics"],
-  },
-  {
     slug: "mama-wawa",
     name: "MaMa WaWa",
     kind: "Web",
@@ -98,6 +88,16 @@ export const projects: Project[] = [
     role: "Frontend developer",
     stack: ["HTML5", "CSS", "JavaScript", "UI/UX"],
     source: "https://github.com/YesBlueue/mama-wawa-for-kids",
+  },
+  {
+    slug: "assistive-gloves",
+    name: "Smart Communication Gloves",
+    kind: "Hardware",
+    pitch: "Two gloves that turn sign gestures into speech, and speech into live captions.",
+    description:
+      "An assistive prototype for deaf and mute users. Gesture shortcuts and gesture-alphabet typing (using a custom UIT Schema for Alphabet Interchange) are spoken aloud, and live speech-to-text captions show up on a screen on the wrist.",
+    role: "Hardware & software prototyping",
+    stack: ["Arduino", "Raspberry Pi", "Python", "eSpeak", "Electronics"],
   },
   {
     slug: "eaindray-go",
