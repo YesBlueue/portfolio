@@ -34,7 +34,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${head.variable} ${body.variable} ${hand.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${head.variable} ${body.variable} ${hand.variable}`}>
       <body>{children}</body>
     </html>
   );

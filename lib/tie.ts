@@ -196,7 +196,10 @@ export function startTie(canvas: HTMLCanvasElement, photo: HTMLElement): () => v
     });
     return best;
   };
+  // Something is covering the page (the intro): leave the tie alone.
+  const covered = (e: PointerEvent) => e.target instanceof Element && !!e.target.closest("[data-knit]");
   const onMove = (e: PointerEvent) => {
+    if (covered(e)) return document.body.classList.remove("near-tie");
     prev = mouse;
     mouse = toImg(e);
     if (grab < 0) document.body.classList.toggle("near-tie", nearest(mouse) > 0);
@@ -206,6 +209,7 @@ export function startTie(canvas: HTMLCanvasElement, photo: HTMLElement): () => v
     }
   };
   const onDown = (e: PointerEvent) => {
+    if (covered(e)) return;
     const m = toImg(e);
     const best = nearest(m);
     if (best > 0) {

@@ -104,6 +104,11 @@ button:focus-visible {
   mask-image: repeating-linear-gradient(90deg, #000 0 14px, transparent 14px 28px);
 }
 
+/* No scrolling while the knitted intro is still covering the page. */
+html:not([data-intro="done"]) {
+  overflow: hidden;
+}
+
 /* Cursor feedback for the tie in the hero. */
 body.near-tie,
 body.near-tie * {

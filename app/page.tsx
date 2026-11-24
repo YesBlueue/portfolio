@@ -1,5 +1,7 @@
 import { CopyEmail } from "@/components/CopyEmail";
+import { Intro } from "@/components/Intro";
 import { Portrait } from "@/components/Portrait";
+import { ReKnit } from "@/components/ReKnit";
 import { projects, site } from "@/lib/content";
 import styles from "./page.module.css";
 
@@ -9,6 +11,7 @@ const BADGES = ["var(--rust)", "var(--moss)", "var(--camel)", "var(--wool-navy)"
 export default function Home() {
   return (
     <>
+      <Intro />
       <nav className={styles.nav} aria-label="Main">
         <div className={`inner ${styles.navInner}`}>
           <a className={styles.mark} href="#top" aria-label={`${site.name}, back to top`}>
@@ -183,7 +186,9 @@ export default function Home() {
           <span>
             © {site.year} {site.name}
           </span>
-          <span>Made in Yangon</span>
+          <span>
+            Made in Yangon · <ReKnit />
+          </span>
         </div>
       </footer>
     </>

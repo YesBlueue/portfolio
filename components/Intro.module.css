@@ -1,0 +1,178 @@
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  /* Shown until the knitting is drawn. */
+  background: #7d3a24 var(--fuzz);
+  transition: opacity 0.55s ease;
+}
+
+.intro[data-ready] {
+  background: transparent;
+}
+
+.intro[data-stage="out"] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+:global(html[data-intro="done"]) .intro {
+  display: none;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* "pull me", riding along with the loose end of the yarn. */
+.tag {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  will-change: transform;
+  transition: opacity 0.3s ease;
+}
+
+.tag span {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  transform: translate(calc(-100% - 6px), 2px) rotate(-5deg);
+  transform-origin: right center;
+  padding: 3px 10px 5px 14px;
+  border-radius: 999px;
+  background: rgba(40, 20, 12, 0.82);
+  box-shadow: 0 6px 14px -6px rgba(20, 8, 4, 0.8);
+  font: 600 27px/1 var(--f-hand);
+  color: var(--cream);
+  white-space: nowrap;
+}
+
+.tag svg {
+  fill: none;
+  stroke: var(--cream);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.nudge span {
+  animation: nudge 0.55s ease;
+}
+
+@keyframes nudge {
+  0%, 100% { translate: 0 0; }
+  20% { translate: -8px 0; }
+  45% { translate: 6px 0; }
+  70% { translate: -3px 0; }
+}
+
+.intro:not([data-ready]) .tag,
+.intro[data-stage] .tag {
+  opacity: 0;
+}
+
+/* A woven care label, stitched on at the top left. */
+.label {
+  position: absolute;
+  top: max(18px, env(safe-area-inset-top, 0px));
+  left: max(18px, env(safe-area-inset-left, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 11px 15px 10px;
+  background: var(--cream);
+  color: var(--cocoa);
+  border-radius: 2px;
+  font: 600 10.5px/1.45 var(--f-body);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  outline: 1px dashed rgba(51, 36, 28, 0.4);
+  outline-offset: -5px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 8px 16px -8px rgba(20, 8, 4, 0.75);
+  transform: rotate(-1.5deg);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.label b {
+  font: 800 15px/1.2 var(--f-head);
+  font-variation-settings: "wdth" 80;
+  letter-spacing: 0.02em;
+  margin-bottom: 3px;
+}
+
+.label .style {
+  margin-top: 3px;
+  color: var(--rust);
+}
+
+@media (max-width: 560px) {
+  .label {
+    padding: 8px 11px 7px;
+    font-size: 8.5px;
+  }
+  .label b {
+    font-size: 12px;
+  }
+}
+
+.skip {
+  position: absolute;
+  left: 50%;
+  bottom: max(26px, env(safe-area-inset-bottom, 0px));
+  translate: -50% 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px 11px 20px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--cream);
+  color: var(--cocoa);
+  font: 700 15px var(--f-body);
+  cursor: pointer;
+  box-shadow: 0 10px 22px -10px rgba(20, 8, 4, 0.8);
+  transition: opacity 0.35s ease, transform 0.2s ease;
+}
+
+.skip:hover {
+  transform: translateY(-2px);
+}
+
+.skip kbd {
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: var(--oat);
+  box-shadow: 0 2px 0 rgba(51, 36, 28, 0.25);
+  font: 600 12px var(--f-body);
+  color: var(--cocoa-soft);
+}
+
+@media (hover: none) {
+  .skip kbd {
+    display: none;
+  }
+  .skip {
+    padding-right: 20px;
+  }
+}
+
+.intro[data-stage="auto"] .label,
+.intro[data-stage="auto"] .skip,
+.intro[data-stage="out"] .label,
+.intro[data-stage="out"] .skip {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.intro[data-stage="auto"] .label {
+  transform: rotate(-1.5deg) translateY(-12px);
+}
