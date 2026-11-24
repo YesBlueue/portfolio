@@ -138,7 +138,7 @@ export default function Home() {
 
         <section className={`${styles.block} ${styles.contact}`} id="contact" aria-labelledby="contact-h">
           <div className="inner">
-            <h2 id="contact-h">CONTACT</h2>
+            <h2 id="contact-h">CONTINUE?</h2>
             <p className={styles.sub}>Want to work together, or just say hi? Send me an email.</p>
             <CopyEmail email={site.email} />
             <ul className={styles.elsewhere}>
