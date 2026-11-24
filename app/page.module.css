@@ -148,8 +148,11 @@
   gap: 56px;
 }
 
-.aboutSolo {
-  grid-template-columns: minmax(0, 1fr);
+.aboutMain {
+  display: grid;
+  gap: 44px;
+  align-content: start;
+  min-width: 0;
 }
 
 .about p {
@@ -164,41 +167,78 @@
   color: var(--cream);
 }
 
-.stats {
-  margin: 0;
-  display: grid;
-  gap: 16px;
-  align-content: start;
+.subhead {
+  margin: 0 0 16px;
+  font: 400 11px var(--f-pixel);
+  color: var(--pink);
+  letter-spacing: 0.04em;
 }
 
-.stat {
+.entries {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: grid;
+  gap: 14px;
+}
+
+.entries li {
+  padding-left: 16px;
+  border-left: 2px solid var(--line);
+}
+
+.entryHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 2px 16px;
+}
+
+.entryTitle {
+  font: 600 17px/1.35 var(--f-ui);
+  color: var(--cream);
+}
+
+.entryMeta {
+  font: 400 14px var(--f-ui);
+  color: var(--dim);
+  white-space: nowrap;
+}
+
+.about p.entryNote {
+  margin: 4px 0 0;
+  font-size: 15px;
+}
+
+.skills {
+  margin: 0;
+  display: grid;
+  gap: 18px;
+}
+
+.skills dt {
+  font: 500 15px var(--f-ui);
+  color: var(--dim);
+  margin-bottom: 6px;
+}
+
+.skills dd {
+  margin: 0;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
   gap: 6px;
 }
 
-.stat dt {
-  font: 400 15px var(--f-ui);
-  color: var(--dim);
-}
-
-.stat dd {
-  margin: 0;
-}
-
-.bar {
-  display: block;
-  position: relative;
-  height: 10px;
-  background: var(--dusk);
+.chips span {
+  font: 500 14px var(--f-ui);
+  padding: 2px 9px;
   border: 2px solid var(--line);
-}
-
-.bar::after {
-  content: "";
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: calc(var(--v) * 100%);
-  background: linear-gradient(90deg, var(--pink), var(--gold));
+  border-radius: 3px;
+  color: var(--cream);
 }
 
 /* contact */

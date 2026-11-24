@@ -24,8 +24,8 @@ const body = IBM_Plex_Sans({
 });
 
 export const metadata: Metadata = {
-  title: `${site.name} · ${site.role}`,
-  description: `Portfolio of ${site.name}, ${site.role.toLowerCase()}.`,
+  title: `${site.name} · Portfolio`,
+  description: `${site.name}: computer science student at UIT, Yangon, building full-stack web apps, hardware prototypes and games.`,
 };
 
 export const viewport: Viewport = {

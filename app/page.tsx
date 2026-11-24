@@ -1,4 +1,4 @@
-import { Fragment, type CSSProperties } from "react";
+import { Fragment } from "react";
 import { CopyEmail } from "@/components/CopyEmail";
 import { Ps1Head } from "@/components/Ps1Head";
 import { ReplayIntro } from "@/components/ReplayIntro";
@@ -41,9 +41,7 @@ export default function Home() {
         <header className={styles.hero} id="top">
           <div className={`inner ${styles.heroInner}`}>
             <div>
-              <p className={styles.kicker}>
-                {site.role} · Portfolio {site.year}
-              </p>
+              <p className={styles.kicker}>{site.kicker}</p>
               <h1 className={styles.name}>
                 {site.name
                   .toUpperCase()
@@ -82,24 +80,58 @@ export default function Home() {
               <h2 id="about-h">PROFILE</h2>
               <span>Player 1</span>
             </div>
-            <div className={`${styles.about} ${site.skills.length ? "" : styles.aboutSolo}`}>
-              <div>
-                <p className={styles.lead}>{site.about.lead}</p>
-                <p>{site.about.body}</p>
+            <div className={styles.about}>
+              <div className={styles.aboutMain}>
+                <div>
+                  <p className={styles.lead}>{site.about.lead}</p>
+                  <p>{site.about.body}</p>
+                </div>
+
+                <div>
+                  <h3 className={styles.subhead}>EXPERIENCE</h3>
+                  <ul className={styles.entries}>
+                    {site.experience.map((e) => (
+                      <li key={e.title}>
+                        <div className={styles.entryHead}>
+                          <span className={styles.entryTitle}>{e.title}</span>
+                          <span className={styles.entryMeta}>{e.meta}</span>
+                        </div>
+                        {e.note && <p className={styles.entryNote}>{e.note}</p>}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className={styles.subhead}>ACHIEVEMENTS</h3>
+                  <ul className={styles.entries}>
+                    {site.awards.map((a) => (
+                      <li key={a.title}>
+                        <div className={styles.entryHead}>
+                          <span className={styles.entryTitle}>{a.title}</span>
+                          <span className={styles.entryMeta}>{a.meta}</span>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
-              {site.skills.length > 0 && (
-                <dl className={styles.stats}>
-                  {site.skills.map((s) => (
-                    <div key={s.label} className={styles.stat}>
-                      <dt>{s.label}</dt>
-                      <dd>
-                        <span className={styles.bar} style={{ "--v": s.value } as CSSProperties} />
-                        <span className="visually-hidden">{Math.round(s.value * 100)} out of 100</span>
+
+              <div>
+                <h3 className={styles.subhead}>SKILLS</h3>
+                <dl className={styles.skills}>
+                  {site.skills.map((g) => (
+                    <div key={g.label}>
+                      <dt>{g.label}</dt>
+                      <dd className={styles.chips}>
+                        {g.items.map((item) => (
+                          <span key={item}>{item}</span>
+                        ))}
                       </dd>
                     </div>
                   ))}
                 </dl>
-              )}
+              </div>
             </div>
           </div>
         </section>
