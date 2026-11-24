@@ -21,14 +21,26 @@ const CLOTHS = [
 ];
 
 /** The card's links: the first is the main one (filled), the rest are stitched outlines. */
-function cardLinks(p: { demo?: string; source?: string }) {
+type LinkIconName = "play" | "site" | "code";
+
+function cardLinks(p: { kind: string; demo?: string; source?: string }) {
+  // Games get played; everything else gets tried.
+  const game = p.kind === "Game";
   return [
-    p.demo && { href: p.demo, label: "Play it", icon: "play" as const },
-    p.source && { href: p.source, label: "Source", icon: "code" as const },
-  ].filter((l): l is { href: string; label: string; icon: "play" | "code" } => !!l);
+    p.demo && { href: p.demo, label: game ? "Play it" : "Try it", icon: (game ? "play" : "site") as LinkIconName },
+    p.source && { href: p.source, label: "Source", icon: "code" as LinkIconName },
+  ].filter((l): l is { href: string; label: string; icon: LinkIconName } => !!l);
 }
 
-function LinkIcon({ icon }: { icon: "play" | "code" }) {
+function LinkIcon({ icon }: { icon: LinkIconName }) {
+  if (icon === "site")
+    return (
+      <svg viewBox="0 0 16 16" aria-hidden="true">
+        <rect x="2" y="3" width="12" height="10" rx="2" fill="none" stroke="currentColor" strokeWidth="1.6" />
+        <path d="M2 6.2h12" stroke="currentColor" strokeWidth="1.6" />
+        <circle cx="4.3" cy="4.6" r=".7" fill="currentColor" />
+      </svg>
+    );
   return icon === "play" ? (
     <svg viewBox="0 0 16 16" aria-hidden="true">
       <path d="M5 3.5v9l7.5-4.5z" fill="currentColor" />
