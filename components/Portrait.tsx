@@ -6,7 +6,7 @@ import { IMG_H, IMG_W, startTie } from "@/lib/tie";
 import styles from "./Portrait.module.css";
 
 /** The hero photo as a tilted print, with the interactive tie hanging out of the frame. */
-export function Portrait({ src, alt, caption }: { src: string; alt: string; caption: string }) {
+export function Portrait({ src, alt, caption, note }: { src: string; alt: string; caption: string; note?: string }) {
   const photoRef = useRef<HTMLDivElement>(null);
   const tieRef = useRef<HTMLCanvasElement>(null);
 
@@ -24,6 +24,12 @@ export function Portrait({ src, alt, caption }: { src: string; alt: string; capt
         <canvas ref={tieRef} className={styles.tie} aria-hidden="true" />
       </div>
       <figcaption>{caption}</figcaption>
+      {/* On phones the hint sits here, in the print's bottom-right corner. */}
+      {note && (
+        <span className={styles.note} aria-hidden="true">
+          {note}
+        </span>
+      )}
     </figure>
   );
 }

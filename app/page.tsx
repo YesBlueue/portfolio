@@ -90,7 +90,12 @@ export default function Home() {
       <main>
         <header className={`${styles.hero} flannel`} id="top">
           <div className={`inner ${styles.heroInner}`}>
-            <Portrait src={site.portrait.src} alt={`Portrait of ${site.name}`} caption={site.portrait.caption} />
+            <Portrait
+              src={site.portrait.src}
+              alt={`Portrait of ${site.name}`}
+              caption={site.portrait.caption}
+              note="psst, tug the tie"
+            />
             <div className={styles.label}>
               <p className={styles.kicker}>{site.kicker}</p>
               <h1 className={styles.name}>{site.name}</h1>

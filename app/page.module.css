@@ -161,6 +161,13 @@
   transform: rotate(-4deg);
 }
 
+/* On phones the hint moves onto the photo print (see Portrait). */
+@media (max-width: 860px) {
+  .note {
+    display: none;
+  }
+}
+
 /* ---------- sections (wool) ---------- */
 .block > :global(.inner) {
   padding-block: 84px;

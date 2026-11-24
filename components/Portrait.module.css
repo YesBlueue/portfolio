@@ -55,6 +55,24 @@
   filter: sepia(0.1) saturate(1.05) contrast(1.03);
 }
 
+/* "psst, tug the tie": only on phones; on wider screens it sits by the buttons. */
+.note {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .note {
+    display: block;
+    position: absolute;
+    right: 16px;
+    bottom: 13px;
+    font: 600 20px var(--f-hand);
+    color: var(--rust);
+    transform: rotate(-4deg);
+    pointer-events: none;
+  }
+}
+
 .print figcaption {
   padding: 10px 4px 14px;
   font: 600 24px var(--f-hand);
