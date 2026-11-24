@@ -146,8 +146,10 @@ export const projects: Project[] = [
     pitch: "A student-support app with tutors, hostels, food and transport in one place.",
     description:
       "A mobile app for Myanmar university students that brings tutoring, housing, meals and campus transport together, with SmartMatch AI to search them. Ask it one question and it suggests school-approved options for you.",
-    // TODO: role, stack and source link still to come.
+    // TODO: role and stack still to come.
     demo: "https://sat-thwal.vercel.app",
+    // Hosted on a teammate's account; Thaw Thaw Tun is a collaborator.
+    source: "https://github.com/theYE-8266-viren-Nai/sat-thwal",
     image: {
       src: "/projects/sat-thwal.png",
       alt: "Sat Thwal poster: the app logo and tagline beside a phone showing the home screen, with tiles for Academic Support, Student Housing, Meal Support and Campus Transport.",

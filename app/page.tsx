@@ -1,23 +1,24 @@
 import Image from "next/image";
 import type { CSSProperties } from "react";
+import { CardFit } from "@/components/CardFit";
 import { CopyEmail } from "@/components/CopyEmail";
 import { Intro } from "@/components/Intro";
 import { Portrait } from "@/components/Portrait";
 import { ReKnit } from "@/components/ReKnit";
+import { Spool } from "@/components/Spool";
 import { Zipper } from "@/components/Zipper";
 import { projects, site } from "@/lib/content";
 import styles from "./page.module.css";
 
 // Each project card gets its own cloth (the pocket) and thread color (the button, the
-// chips and the links), in order. `x` is the thread sewing the button on; `ink` is the
-// text color that reads well on the thread color.
+// chips and the links), in order. `x` is the thread sewing the button on.
 const CLOTHS = [
-  { fabric: "flannel", thread: "var(--rust)", x: "var(--cream)", ink: "var(--cream)" },
-  { fabric: "corduroy", thread: "var(--moss)", x: "var(--cream)", ink: "var(--cream)" },
-  { fabric: "tweed", thread: "var(--camel)", x: "var(--cream)", ink: "var(--cocoa)" },
-  { fabric: "twill", thread: "var(--wool-navy)", x: "var(--cream)", ink: "var(--cream)" },
-  { fabric: "gingham", thread: "var(--mustard)", x: "var(--cocoa)", ink: "var(--cocoa)" },
-  { fabric: "herringbone", thread: "var(--cocoa-soft)", x: "var(--cream)", ink: "var(--cream)" },
+  { fabric: "flannel", thread: "var(--rust)", x: "var(--cream)" },
+  { fabric: "corduroy", thread: "var(--moss)", x: "var(--cream)" },
+  { fabric: "tweed", thread: "var(--camel)", x: "var(--cream)" },
+  { fabric: "twill", thread: "var(--wool-navy)", x: "var(--cream)" },
+  { fabric: "gingham", thread: "var(--mustard)", x: "var(--cocoa)" },
+  { fabric: "herringbone", thread: "var(--cocoa-soft)", x: "var(--cream)" },
 ];
 
 /** The card's links: the first is the main one (filled), the rest are stitched outlines. */
@@ -57,6 +58,7 @@ export default function Home() {
     <>
       <Intro />
       <Zipper />
+      <Spool />
       <nav className={styles.nav} aria-label="Main">
         <div className={`inner ${styles.navInner}`}>
           <a className={styles.mark} href="#top" aria-label={`${site.name}, back to top`}>
@@ -114,7 +116,7 @@ export default function Home() {
               <h2 id="projects-h">Projects</h2>
               <span>Things I&apos;ve built</span>
             </div>
-            <div className={styles.cards}>
+            <div className={styles.cards} data-cards="">
               {projects.map((p, i) => {
                 const cloth = CLOTHS[i % CLOTHS.length];
                 return (
@@ -122,7 +124,7 @@ export default function Home() {
                   key={p.slug}
                   className={`${styles.card} ${p.placeholder ? styles.saved : ""}`}
                   id={p.slug}
-                  style={{ "--thread": cloth.thread, "--x": cloth.x, "--ink": cloth.ink } as CSSProperties}
+                  style={{ "--thread": cloth.thread, "--x": cloth.x } as CSSProperties}
                 >
                   {/* A faint running stitch around the card, passing under the pocket. */}
                   <svg className={styles.stitch} aria-hidden="true">
@@ -189,6 +191,7 @@ export default function Home() {
                 );
               })}
             </div>
+            <CardFit target="[data-cards]" />
           </div>
         </section>
 

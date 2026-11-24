@@ -616,14 +616,15 @@
   pointer-events: none;
 }
 
-/* Main: a leather-like patch in the thread color, with a cream stitch. */
+/* Main: a woolly patch in the thread color, with cream text and a cream stitch. */
 .linkPatch.mainLink {
   background:
     radial-gradient(ellipse at 30% 0%, rgba(255, 255, 255, 0.22), transparent 60%),
     var(--fuzz),
     var(--thread);
   background-size: auto, 120px 120px, auto;
-  color: var(--ink, var(--cream));
+  color: var(--cream);
+  text-shadow: 0 1px 0 rgba(30, 14, 6, 0.35);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.2),
     inset 0 -2px 0 rgba(0, 0, 0, 0.22),
