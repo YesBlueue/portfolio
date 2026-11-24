@@ -41,8 +41,8 @@ function rgba(c: RGB, f = 1, a = 1) {
 }
 
 export type KnitHooks = {
-  /** Every frame: where the loose end of the yarn is, in CSS px. */
-  onFrame: (x: number, y: number) => void;
+  /** Every frame: where the loose end of the yarn is, and how far down the unravelled edge has reached, in CSS px. */
+  onFrame: (x: number, y: number, edge: number) => void;
   onGrab: () => void;
   onAuto: () => void;
   /** Pressed on the fabric, not on the yarn. */
@@ -501,7 +501,7 @@ export function startKnit(canvas: HTMLCanvasElement, hooks: KnitHooks): Knit {
     }
 
     drawYarn(a.color);
-    hooks.onFrame(P[N].x, P[N].y);
+    hooks.onFrame(P[N].x, P[N].y, eaten >= total ? H : Math.floor(eaten / cols) * sh);
   }
 
   // ---------- input ----------

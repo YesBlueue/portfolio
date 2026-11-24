@@ -208,10 +208,73 @@ export function startTie(canvas: HTMLCanvasElement, photo: HTMLElement): () => v
       draw();
     }
   };
+  // Phones: gravity follows how the phone is tilted, and shaking it swings the tie.
+  // Gravity here is in photo px per step², pointing down the screen by default.
+  const GRAVITY = 0.9;
+  const grav = { x: 0, y: GRAVITY };
+  const gravTo = { x: 0, y: GRAVITY };
+  const jolt = { x: 0, y: 0 };
+  const DEG = Math.PI / 180;
+  /** Device axes (x right, y down the screen as held upright) to the screen as it's shown now. */
+  const toScreen = (x: number, y: number) => {
+    const a = (screen.orientation?.angle ?? 0) * DEG;
+    return [x * Math.cos(a) - y * Math.sin(a), x * Math.sin(a) + y * Math.cos(a)];
+  };
+  const onTilt = (e: DeviceOrientationEvent) => {
+    if (e.beta == null || e.gamma == null) return;
+    const b = e.beta * DEG, g = e.gamma * DEG;
+    // Where "down" points across the face of the screen.
+    const [sx, sy] = toScreen(Math.cos(b) * Math.sin(g), Math.sin(b));
+    // Lying flat, gravity points into the screen; keep a little pull down so the tie still hangs.
+    const flat = Math.max(0, 0.3 - Math.hypot(sx, sy));
+    gravTo.x = GRAVITY * sx;
+    gravTo.y = GRAVITY * (sy + flat);
+  };
+  const onShake = (e: DeviceMotionEvent) => {
+    const a = e.acceleration;
+    if (!a || a.x == null || a.y == null) return;
+    const [sx, sy] = toScreen(a.x, -a.y);
+    // The tie lags behind the phone, so it swings the other way.
+    jolt.x = Math.max(-8, Math.min(8, jolt.x - sx * 0.15));
+    jolt.y = Math.max(-8, Math.min(8, jolt.y - sy * 0.15));
+  };
+  const sensors = !reduce && window.matchMedia("(pointer: coarse)").matches && "DeviceOrientationEvent" in window;
+  let sensing = false;
+  const listen = () => {
+    window.addEventListener("deviceorientation", onTilt);
+    window.addEventListener("devicemotion", onShake);
+  };
+  type Ask = { requestPermission?: () => Promise<string> };
+  // iPhones ask first, and only from a tap; Android just works.
+  const needsAsk = sensors && typeof (DeviceOrientationEvent as unknown as Ask).requestPermission === "function";
+  if (sensors && !needsAsk) {
+    sensing = true;
+    listen();
+  }
+  const askForSensors = () => {
+    if (!needsAsk || sensing) return;
+    sensing = true;
+    const ask = async (api: unknown) => (await (api as Ask).requestPermission?.()) === "granted";
+    ask(DeviceOrientationEvent)
+      .then(async (ok) => {
+        // Not allowed yet: try again on the next tap (a refusal the user made sticks anyway).
+        if (!ok) return void (sensing = false);
+        if (typeof DeviceMotionEvent !== "undefined") await ask(DeviceMotionEvent).catch(() => false);
+        listen();
+      })
+      // Refused without a tap (iPhone): try again on the next tap of the photo.
+      .catch(() => (sensing = false));
+  };
+  // Some browsers have the permission call but grant it without asking; try once up front.
+  askForSensors();
+
+  let touchedTie = false;
   const onDown = (e: PointerEvent) => {
     if (covered(e)) return;
     const m = toImg(e);
     const best = nearest(m);
+    // A tap on the photo or the tie is a good moment to ask for motion access on iPhones.
+    touchedTie = e.pointerType === "touch" && (best > 0 || (m.x >= 0 && m.x <= IMG_W && m.y >= 0 && m.y <= IMG_H));
     if (best > 0) {
       e.preventDefault();
       grab = best;
@@ -219,7 +282,10 @@ export function startTie(canvas: HTMLCanvasElement, photo: HTMLElement): () => v
       document.body.classList.add("dragging-tie");
     }
   };
-  const release = () => {
+  const release = (e?: Event) => {
+    // Permission prompts need a finished tap (pointerup), not just a press.
+    if (touchedTie && e?.type === "pointerup") askForSensors();
+    touchedTie = false;
     grab = -1;
     document.body.classList.remove("dragging-tie");
   };
@@ -231,14 +297,16 @@ export function startTie(canvas: HTMLCanvasElement, photo: HTMLElement): () => v
   function step() {
     t += 1;
     const breeze = reduce ? 0 : Math.sin(t * 0.013) * 0.05 + Math.sin(t * 0.031) * 0.03;
+    grav.x += (gravTo.x - grav.x) * 0.1;
+    grav.y += (gravTo.y - grav.y) * 0.1;
     for (let i = 1; i < N; i++) {
       const p = pts[i];
       const vx = (p.x - p.px) * 0.985;
       const vy = (p.y - p.py) * 0.985;
       p.px = p.x;
       p.py = p.y;
-      p.x += vx + breeze * (i / N);
-      p.y += vy + 0.9;
+      p.x += vx + breeze * (i / N) + grav.x + jolt.x * (i / N);
+      p.y += vy + grav.y + jolt.y * (i / N);
       // A quick swipe near the tie pushes it along.
       if (mouse && prev && grab < 0) {
         const d = Math.hypot(p.x - mouse.x, p.y - mouse.y);
@@ -249,6 +317,8 @@ export function startTie(canvas: HTMLCanvasElement, photo: HTMLElement): () => v
         }
       }
     }
+    jolt.x *= 0.8;
+    jolt.y *= 0.8;
     if (grab > 0 && mouse) {
       pts[grab].x = mouse.x;
       pts[grab].y = mouse.y;
@@ -273,8 +343,8 @@ export function startTie(canvas: HTMLCanvasElement, photo: HTMLElement): () => v
           b.y -= dy * diff * 0.5;
         }
       }
-      // Keep the blade from folding up past the knot.
-      for (let i = 1; i < N; i++) if (pts[i].y < KNOT.y - 10) pts[i].y = KNOT.y - 10;
+      // Keep the blade from folding up past the knot, unless the phone is upside down.
+      if (grav.y > GRAVITY * 0.4) for (let i = 1; i < N; i++) if (pts[i].y < KNOT.y - 10) pts[i].y = KNOT.y - 10;
     }
     if (grab > 0 && mouse) {
       pts[grab].x = mouse.x;
@@ -566,6 +636,8 @@ export function startTie(canvas: HTMLCanvasElement, photo: HTMLElement): () => v
     window.removeEventListener("pointerup", release);
     window.removeEventListener("pointercancel", release);
     window.removeEventListener("blur", release);
+    window.removeEventListener("deviceorientation", onTilt);
+    window.removeEventListener("devicemotion", onShake);
     document.removeEventListener("mouseleave", onLeave);
     document.body.classList.remove("near-tie", "dragging-tie");
   };

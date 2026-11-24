@@ -50,7 +50,6 @@
   outline-offset: -5px;
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 8px 16px -8px rgba(20, 8, 4, 0.75);
   transform: rotate(-1.5deg);
-  transition: opacity 0.35s ease, transform 0.35s ease;
 }
 
 .label b {
@@ -75,12 +74,9 @@
   }
 }
 
-.intro[data-stage="auto"] .label,
-.intro[data-stage="out"] .label {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.intro[data-stage="auto"] .label {
-  transform: rotate(-1.5deg) translateY(-12px);
+/* Once the stitching under it comes undone, the label is moved by script (see Intro.tsx). */
+.label[data-falling] {
+  transition: none;
+  transform-origin: 50% 100%;
+  will-change: transform;
 }
