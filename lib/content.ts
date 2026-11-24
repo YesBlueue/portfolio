@@ -6,10 +6,14 @@ export type Project = {
   kind: string;
   pitch: string;
   description: string;
-  role: string;
-  stack: string[];
+  role?: string;
+  stack?: string[];
   demo?: string;
   source?: string;
+  /** Cover image, tucked into the card's pocket. Without one the card shows an empty print. */
+  image?: { src: string; alt: string; width: number; height: number };
+  /** A saved spot for a future project. */
+  placeholder?: boolean;
 };
 
 export type Entry = { title: string; meta: string; note?: string };
@@ -70,45 +74,93 @@ export const projects: Project[] = [
     slug: "uit-virtual-campus",
     name: "UIT Virtual Campus",
     kind: "Web",
-    pitch: "A campus platform for UIT: a 3D campus map, timetables, room bookings, clubs and events in one place.",
+    pitch: "A campus platform for UIT with a 3D map, timetables and bookings.",
     description:
-      "I'm leading the team building this platform for the University of Information Technology. It has an interactive 3D campus map with room search, availability and shortest-path routing. Students get their timetable by academic group and can book rooms and the hall, which admins approve. Clubs manage members and events, and students can message each other. I work across the stack, on the Next.js frontend and the Spring Boot API.",
+      "An interactive 3D campus map with room search and shortest-path routing, plus timetables, room bookings, clubs, events and messaging. I lead the team and work on the Next.js frontend and Spring Boot API.",
     role: "Team lead · Full-stack developer",
     stack: ["Next.js", "shadcn/ui", "Spring Boot", "Supabase", "Three.js"],
     // Public backend repo. The frontend repo (YesBlueue/uit_virtual_campus_frontend) is private.
     source: "https://github.com/KaungSet178/UIT_Virtual_Campus",
+    image: {
+      src: "/projects/uit-virtual-campus.webp",
+      alt: "UIT Virtual Campus poster: the headline “Find your way around campus in 3D” with feature tags for Campus Map, Timetable, Reservations, Clubs and Events, above a 3D model of the campus buildings with Room 311 pinned.",
+      width: 1260,
+      height: 1000,
+    },
   },
   {
     slug: "mama-wawa",
     name: "MaMa WaWa",
     kind: "Web",
-    pitch: "A learning platform for kids, with games, minigames and story-driven lessons.",
+    pitch: "A learning platform for kids with games, minigames and story lessons.",
     description:
-      "Our first-year team project: a web platform that makes learning fun for children with brain and math games, minigames, story-driven lessons and rich visuals. I worked on the frontend and the UI/UX.",
+      "A web platform that makes learning fun for children with brain and math games, minigames, story-driven lessons and rich visuals. It was a first-year team project, and I worked on the frontend and UI/UX.",
     role: "Frontend developer",
     stack: ["HTML5", "CSS", "JavaScript", "UI/UX"],
     source: "https://github.com/YesBlueue/mama-wawa-for-kids",
+    image: {
+      src: "/projects/mama-wawa.webp",
+      alt: "MaMa WaWa poster: a smiling cartoon girl beside the title, with buttons for Stories, Brain Games, MiniGames and Sing-Alongs, and screenshots of a farm scene and an arithmetic quiz.",
+      width: 1260,
+      height: 1000,
+    },
   },
   {
     slug: "assistive-gloves",
     name: "Smart Communication Gloves",
     kind: "Hardware",
-    pitch: "Two gloves that turn sign gestures into speech, and speech into live captions.",
+    pitch: "Two gloves that turn sign gestures into speech and speech into captions.",
     description:
-      "An assistive prototype for deaf and mute users. Gesture shortcuts and gesture-alphabet typing (using a custom UIT Schema for Alphabet Interchange) are spoken aloud, and live speech-to-text captions show up on a screen on the wrist.",
+      "An assistive prototype for deaf and mute users that speaks gestures and finger-spelled words aloud, and shows live captions on the wrist. I prototyped the hardware and software, including our own 5-bit finger alphabet.",
     role: "Hardware & software prototyping",
     stack: ["Arduino", "Raspberry Pi", "Python", "eSpeak", "Electronics"],
+    image: {
+      src: "/projects/assistive-gloves.png",
+      alt: "Smart Communication Gloves poster: the title and feature tags beside a close-up photo of a black glove wired with finger sensors, and a code card mapping the gesture 11001 to the letter V.",
+      width: 1260,
+      height: 1000,
+    },
   },
   {
     slug: "eaindray-go",
     name: "Eaindray Go",
     kind: "Game",
-    pitch: "My first real video game: an endless 2D runner.",
+    pitch: "An endless 2D runner, and the first real video game I made.",
     description:
-      "Inspired by classic endless runners. Tap to jump over obstacles and incoming animals, and see how far you can get. Built in Godot with object-oriented design, as a birthday gift.",
+      "A game inspired by classic endless runners where you tap to jump over obstacles and incoming animals and see how far you get. I built it on my own in Godot, with object-oriented design, as a birthday gift.",
     role: "Solo developer",
     stack: ["Godot", "GDScript", "GDShader"],
     demo: "https://yesblueue.itch.io/eaindray-go",
     source: "https://github.com/YesBlueue/eaindray-go",
+    image: {
+      src: "/projects/eaindray-go.png",
+      alt: "Eaindray Go cover art: a pixel-art girl running on a grassy ledge past a fox and a fence, under the title in a pixel font.",
+      width: 630,
+      height: 500,
+    },
+  },
+  {
+    slug: "sat-thwal",
+    name: "Sat Thwal",
+    kind: "App",
+    pitch: "A student-support app with tutors, hostels, food and transport in one place.",
+    description:
+      "A mobile app for Myanmar university students that brings tutoring, housing, meals and campus transport together, with SmartMatch AI to search them. Ask it one question and it suggests school-approved options for you.",
+    // TODO: role, stack and links still to come.
+    image: {
+      src: "/projects/sat-thwal.png",
+      alt: "Sat Thwal poster: the app logo and tagline beside a phone showing the home screen, with tiles for Academic Support, Student Housing, Meal Support and Campus Transport.",
+      width: 1260,
+      height: 1000,
+    },
+  },
+  {
+    slug: "next-project",
+    name: "Next project",
+    kind: "Coming soon",
+    pitch: "Something new is on the loom, and it will land right here soon.",
+    description:
+      "A spot saved for whatever I finish next, since there is always something new in progress on my desk. Check back soon, or ask me what I am working on right now.",
+    placeholder: true,
   },
 ];

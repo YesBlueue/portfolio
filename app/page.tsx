@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { CSSProperties } from "react";
 import { CopyEmail } from "@/components/CopyEmail";
 import { Intro } from "@/components/Intro";
@@ -7,13 +8,15 @@ import { Zipper } from "@/components/Zipper";
 import { projects, site } from "@/lib/content";
 import styles from "./page.module.css";
 
-// Each project card gets its own cloth (the band across the top) and thread color (the
-// button, the stitching and the chips), in order.
+// Each project card gets its own cloth (the pocket) and thread color (the button and
+// the chips), in order. `x` is the thread sewing the button on.
 const CLOTHS = [
-  { fabric: "flannel", thread: "var(--rust)" },
-  { fabric: "corduroy", thread: "var(--moss)" },
-  { fabric: "tweed", thread: "var(--camel)" },
-  { fabric: "twill", thread: "var(--wool-navy)" },
+  { fabric: "flannel", thread: "var(--rust)", x: "var(--cream)" },
+  { fabric: "corduroy", thread: "var(--moss)", x: "var(--cream)" },
+  { fabric: "tweed", thread: "var(--camel)", x: "var(--cream)" },
+  { fabric: "twill", thread: "var(--wool-navy)", x: "var(--cream)" },
+  { fabric: "gingham", thread: "var(--mustard)", x: "var(--cocoa)" },
+  { fabric: "herringbone", thread: "var(--cocoa-soft)", x: "var(--cream)" },
 ];
 
 export default function Home() {
@@ -84,23 +87,32 @@ export default function Home() {
                 return (
                 <article
                   key={p.slug}
-                  className={styles.card}
+                  className={`${styles.card} ${p.placeholder ? styles.saved : ""}`}
                   id={p.slug}
-                  style={{ "--thread": cloth.thread } as CSSProperties}
+                  style={{ "--thread": cloth.thread, "--x": cloth.x } as CSSProperties}
                 >
-                  {/* The stitching around the card: faint at rest, sewn in with colored
-                      thread on hover (the mask draws it along the path). */}
+                  {/* A faint running stitch around the card, passing under the pocket. */}
                   <svg className={styles.stitch} aria-hidden="true">
-                    <defs>
-                      <mask id={`stitch-${p.slug}`} maskUnits="userSpaceOnUse" x="0" y="0" width="100%" height="100%">
-                        <rect className={styles.stitchReveal} pathLength={1} />
-                      </mask>
-                    </defs>
-                    <rect className={styles.stitchRest} />
-                    <rect className={styles.stitchSewn} mask={`url(#stitch-${p.slug})`} />
+                    <rect />
                   </svg>
-                  <div className={styles.swatch} aria-hidden="true">
-                    <div data-fabric={cloth.fabric} />
+                  {/* A print tucked into a pocket of the card's cloth; it slides out a little on hover. */}
+                  <div className={styles.pocket}>
+                    <figure className={styles.print}>
+                      {p.image ? (
+                        <Image
+                          src={p.image.src}
+                          alt={p.image.alt}
+                          width={p.image.width}
+                          height={p.image.height}
+                          sizes="(max-width: 860px) 90vw, 480px"
+                        />
+                      ) : (
+                        <span className={styles.blank}>{p.placeholder ? "On the loom" : "Photo coming soon"}</span>
+                      )}
+                    </figure>
+                    <div className={styles.swatch} aria-hidden="true">
+                      <div data-fabric={cloth.fabric} />
+                    </div>
                   </div>
                   <div className={styles.cardTop}>
                     <span className={styles.button} aria-hidden="true" />
@@ -112,12 +124,14 @@ export default function Home() {
                   <h3>{p.name}</h3>
                   <p className={styles.pitch}>{p.pitch}</p>
                   <p>{p.description}</p>
-                  <span className={styles.role}>{p.role}</span>
-                  <div className={styles.chips}>
-                    {p.stack.map((s) => (
-                      <span key={s}>{s}</span>
-                    ))}
-                  </div>
+                  {p.role && <span className={styles.role}>{p.role}</span>}
+                  {p.stack && p.stack.length > 0 && (
+                    <div className={styles.chips}>
+                      {p.stack.map((s) => (
+                        <span key={s}>{s}</span>
+                      ))}
+                    </div>
+                  )}
                   {(p.demo || p.source) && (
                     <div className={styles.links}>
                       {p.demo && (
