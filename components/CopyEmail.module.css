@@ -1,36 +1,38 @@
 .box {
   display: inline-flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   flex-wrap: wrap;
   justify-content: center;
   max-width: 100%;
-  padding: 16px 22px;
-  background: var(--dusk);
-  border: 2px solid var(--line);
-  border-radius: 6px;
+  padding: 12px 14px 12px 24px;
+  border-radius: 999px;
+  background: var(--cream);
+  color: var(--cocoa);
+  box-shadow: 0 14px 30px -14px rgba(0, 0, 0, 0.6);
 }
 
 .mail {
-  font: 600 clamp(18px, 2.4vw, 24px) var(--f-ui);
+  font: 700 clamp(17px, 2.2vw, 22px) var(--f-body);
   text-decoration: none;
   overflow-wrap: anywhere;
 }
 
 .mail:hover {
-  color: var(--gold);
+  color: var(--rust);
 }
 
 .copy {
   border: 0;
   cursor: pointer;
-  font: 400 11px var(--f-pixel);
-  color: var(--night);
-  background: var(--gold);
-  padding: 8px 10px;
-  border-radius: 3px;
+  padding: 9px 16px;
+  border-radius: 999px;
+  background: var(--mustard);
+  color: var(--cocoa);
+  font: 800 13px var(--f-body);
+  letter-spacing: 0.06em;
 }
 
 .copy:hover {
-  background: #fff0b8;
+  background: #edbd5e;
 }

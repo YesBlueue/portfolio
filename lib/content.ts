@@ -3,6 +3,7 @@
 export type Project = {
   slug: string;
   name: string;
+  kind: string;
   pitch: string;
   description: string;
   role: string;
@@ -16,10 +17,12 @@ export type Entry = { title: string; meta: string; note?: string };
 export const site = {
   name: "Thaw Thaw Tun",
   initials: "TTT",
-  kicker: "CS Student · Software & AI Engineering",
+  kicker: "CS student · Yangon",
   year: 2026,
   intro:
-    "I'm a computer science student at UIT, Yangon. I build full-stack web apps and hardware prototypes, and I'm heading into machine learning and AI engineering.",
+    "I build full-stack web apps, hardware prototypes and games, and I'm heading into machine learning and AI engineering.",
+  // Stand-in portrait until the final photo is taken (ideally without the tie; see lib/tie.ts).
+  portrait: { src: "/portrait.webp", caption: "Yangon, 2026" },
   email: "thawtunthaw252@gmail.com",
   links: {
     github: "https://github.com/YesBlueue",
@@ -66,6 +69,7 @@ export const projects: Project[] = [
   {
     slug: "uit-virtual-campus",
     name: "UIT Virtual Campus",
+    kind: "Web",
     pitch: "A campus platform for UIT: a 3D campus map, timetables, room bookings, clubs and events in one place.",
     description:
       "I'm leading the team building this platform for the University of Information Technology. It has an interactive 3D campus map with room search, availability and shortest-path routing. Students get their timetable by academic group and can book rooms and the hall, which admins approve. Clubs manage members and events, and students can message each other. I work across the stack, on the Next.js frontend and the Spring Boot API.",
@@ -77,6 +81,7 @@ export const projects: Project[] = [
   {
     slug: "assistive-gloves",
     name: "Smart Communication Gloves",
+    kind: "Hardware",
     pitch: "Two gloves that turn sign gestures into speech, and speech into live captions.",
     description:
       "An assistive prototype for deaf and mute users. Gesture shortcuts and gesture-alphabet typing (using a custom UIT Schema for Alphabet Interchange) are spoken aloud, and live speech-to-text captions show up on a screen on the wrist.",
@@ -86,6 +91,7 @@ export const projects: Project[] = [
   {
     slug: "mama-wawa",
     name: "MaMa WaWa",
+    kind: "Web",
     pitch: "A learning platform for kids, with games, minigames and story-driven lessons.",
     description:
       "Our first-year team project: a web platform that makes learning fun for children with brain and math games, minigames, story-driven lessons and rich visuals. I worked on the frontend and the UI/UX.",
@@ -96,6 +102,7 @@ export const projects: Project[] = [
   {
     slug: "eaindray-go",
     name: "Eaindray Go",
+    kind: "Game",
     pitch: "My first real video game: an endless 2D runner.",
     description:
       "Inspired by classic endless runners. Tap to jump over obstacles and incoming animals, and see how far you can get. Built in Godot with object-oriented design, as a birthday gift.",

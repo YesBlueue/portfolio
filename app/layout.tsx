@@ -1,26 +1,26 @@
 import type { Metadata, Viewport } from "next";
-import { Chakra_Petch, IBM_Plex_Sans, Press_Start_2P } from "next/font/google";
+import { Bricolage_Grotesque, Caveat, Figtree } from "next/font/google";
 import { site } from "@/lib/content";
-import { TITLE_SEEN_KEY } from "@/lib/title";
 import "./globals.css";
 
-const pixel = Press_Start_2P({
-  weight: "400",
+// Headings: a friendly grotesque, used slightly condensed.
+const head = Bricolage_Grotesque({
   subsets: ["latin"],
-  variable: "--font-pixel",
+  axes: ["wdth"],
+  variable: "--font-head",
 });
 
-// Squared-off, game-UI feel but readable at small sizes (menus, labels, buttons).
-const ui = Chakra_Petch({
-  weight: ["400", "500", "600"],
-  subsets: ["latin"],
-  variable: "--font-ui",
-});
-
-const body = IBM_Plex_Sans({
-  weight: ["400", "500", "600"],
+// Body text.
+const body = Figtree({
   subsets: ["latin"],
   variable: "--font-body",
+});
+
+// One handwritten accent (photo caption, little notes).
+const hand = Caveat({
+  weight: "600",
+  subsets: ["latin"],
+  variable: "--font-hand",
 });
 
 export const metadata: Metadata = {
@@ -29,29 +29,12 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0d0816",
-  viewportFit: "cover",
+  themeColor: "#8c3f27",
 };
-
-// Runs before first paint: skip the title screen for returning visitors
-// and for links that jump straight to a section.
-const titleScript = `(function(){try{if(localStorage.getItem(${JSON.stringify(
-  TITLE_SEEN_KEY,
-)})||location.hash)document.documentElement.setAttribute("data-title","seen")}catch(e){}})()`;
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      className={`${pixel.variable} ${ui.variable} ${body.variable}`}
-      suppressHydrationWarning
-    >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: titleScript }} />
-        <noscript>
-          <style>{`[data-title-screen]{display:none!important}body{overflow:auto!important}`}</style>
-        </noscript>
-      </head>
+    <html lang="en" className={`${head.variable} ${body.variable} ${hand.variable}`}>
       <body>{children}</body>
     </html>
   );

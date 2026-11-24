@@ -1,0 +1,62 @@
+.print {
+  position: relative;
+  z-index: 5;
+  justify-self: center;
+  width: min(400px, 100%);
+  margin: 0;
+  padding: 14px 14px 0;
+  background: var(--cream);
+  border-radius: 4px;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.08), 0 26px 50px -20px rgba(20, 8, 4, 0.7);
+  transform: rotate(-2.5deg);
+}
+
+.wrap {
+  position: relative;
+}
+
+.photo {
+  position: relative;
+  aspect-ratio: 1206 / 1280;
+  overflow: hidden;
+  border-radius: 2px;
+  filter: sepia(0.1) saturate(1.05) contrast(1.03);
+}
+
+.photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* A warm, film-like grade over the photo. */
+.photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(160deg, rgba(255, 175, 95, 0.2), transparent 45%, rgba(70, 40, 30, 0.15));
+  mix-blend-mode: soft-light;
+}
+
+/* Bigger than the photo, so the tie can hang out past the frame.
+   Matches PAD_X (400 of 1206 px each side) and LAYER_H (1.6) in lib/tie.ts. */
+.tie {
+  position: absolute;
+  left: -33.167%;
+  top: 0;
+  width: 166.333%;
+  height: 160%;
+  pointer-events: none;
+  z-index: 3;
+  filter: sepia(0.1) saturate(1.05) contrast(1.03);
+}
+
+.print figcaption {
+  padding: 10px 4px 14px;
+  font: 600 24px var(--f-hand);
+  color: var(--wool-navy);
+}

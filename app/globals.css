@@ -1,21 +1,26 @@
-/* PS1 theme: dusk purples, gold for whatever is selected, pink for accents.
-   Pixel fonts for headings and menus; a clean sans for anything you read. */
+/* Cozy: a warm autumn evening in the city. Rust flannel, oatmeal wool, moss tweed and
+   lamp-light glow. A friendly grotesque for headings, a clean sans for reading, one
+   handwritten accent. No serif anywhere. */
 :root {
-  --night: #0d0816;
-  --dusk: #1a1226;
-  --panel: #221838;
-  --lilac: #cfc3ea;
-  --dim: #8f82ad;
-  --cream: #f3ead6;
-  --gold: #ffd35a;
-  --pink: #ff4f9a;
-  --line: rgba(185, 167, 230, 0.22);
+  --oat: #eee3d0;
+  --cream: #faf4ea;
+  --cocoa: #33241c;
+  --cocoa-soft: #6a5546;
+  --rust: #9b4a2e;
+  --camel: #c08a55;
+  --mustard: #e0a83e;
+  --moss: #46553a;
+  --moss-dark: #2f3b27;
+  --wool-navy: #2e3654;
 
-  --f-pixel: var(--font-pixel), "Courier New", monospace;
-  --f-ui: var(--font-ui), "Trebuchet MS", sans-serif;
-  --f-body: var(--font-body), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-head: var(--font-head), "Helvetica Neue", Arial, sans-serif;
+  --f-body: var(--font-body), "Helvetica Neue", Arial, sans-serif;
+  --f-hand: var(--font-hand), cursive;
 
-  color-scheme: dark;
+  /* Fine wool fuzz, layered over the fabric patterns below. */
+  --fuzz: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+
+  color-scheme: light;
 }
 
 * {
@@ -24,50 +29,15 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 72px;
+  scroll-padding-top: 64px;
 }
 
 body {
   margin: 0;
-  min-height: 100%;
-  color: var(--cream);
+  color: var(--cocoa);
   font: 400 17px/1.65 var(--f-body);
-  background:
-    radial-gradient(ellipse 70% 50% at 70% 0%, #3a2a58 0%, transparent 70%),
-    var(--night);
+  background: var(--oat);
   -webkit-font-smoothing: antialiased;
-}
-
-/* Paint the phone's status-bar strip in the page color. */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0 0 auto;
-  height: env(safe-area-inset-top, 0px);
-  background: var(--night);
-  z-index: 30;
-}
-
-/* CRT scanlines and a soft dark edge over everything. */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 40;
-  background:
-    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.16) 0 1px, transparent 1px 3px),
-    radial-gradient(ellipse at center, transparent 62%, rgba(0, 0, 0, 0.45));
-}
-
-/* Hold the page still while the title screen is up. */
-html:not([data-title]) body {
-  overflow: hidden;
-}
-
-::selection {
-  background: var(--gold);
-  color: var(--night);
 }
 
 a {
@@ -76,63 +46,74 @@ a {
 
 a:focus-visible,
 button:focus-visible {
-  outline: 2px solid var(--gold);
+  outline: 3px solid var(--mustard);
   outline-offset: 3px;
+  border-radius: 6px;
+}
+
+::selection {
+  background: var(--mustard);
+  color: var(--cocoa);
 }
 
 .inner {
-  max-width: 1100px;
+  max-width: 1120px;
   margin: 0 auto;
   padding-left: max(24px, env(safe-area-inset-left, 0px));
   padding-right: max(24px, env(safe-area-inset-right, 0px));
 }
 
-/* Menu-style link: a gold cursor nudges in on hover and focus. */
-.sel {
-  position: relative;
-  text-decoration: none;
-  transition: color 0.1s steps(2);
+/* ---------- fabrics ---------- */
+
+/* Rust flannel: a soft plaid. */
+.flannel {
+  background-color: #8c3f27;
+  background-image:
+    var(--fuzz),
+    repeating-linear-gradient(90deg, rgba(240, 200, 120, 0.16) 0 3px, transparent 3px 58px, rgba(25, 15, 10, 0.28) 58px 62px, transparent 62px 140px),
+    repeating-linear-gradient(0deg, rgba(240, 200, 120, 0.16) 0 3px, transparent 3px 58px, rgba(25, 15, 10, 0.28) 58px 62px, transparent 62px 140px),
+    repeating-linear-gradient(90deg, rgba(20, 10, 6, 0.22) 0 40px, transparent 40px 70px),
+    repeating-linear-gradient(0deg, rgba(20, 10, 6, 0.22) 0 40px, transparent 40px 70px);
+  background-size: 200px 200px, auto, auto, auto, auto;
 }
-.sel::before {
+
+/* Oatmeal wool felt. */
+.wool {
+  background-color: var(--oat);
+  background-image: var(--fuzz);
+  background-size: 220px 220px;
+  background-blend-mode: soft-light;
+}
+
+/* Moss tweed: a fine herringbone. */
+.tweed {
+  position: relative;
+  background-color: var(--moss);
+  background-image: var(--fuzz), repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.14) 0 3px, transparent 3px 7px);
+  background-size: 200px 200px, auto;
+}
+
+.tweed::before {
   content: "";
   position: absolute;
-  left: -16px;
-  top: 50%;
-  transform: translateY(-50%);
-  border-left: 8px solid var(--gold);
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  opacity: 0;
-}
-.sel:hover,
-.sel:focus-visible {
-  color: var(--gold);
-}
-.sel:hover::before,
-.sel:focus-visible::before {
-  opacity: 1;
-  animation: nudge 0.5s steps(2) infinite;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.06) 0 3px, transparent 3px 7px);
+  -webkit-mask-image: repeating-linear-gradient(90deg, #000 0 14px, transparent 14px 28px);
+  mask-image: repeating-linear-gradient(90deg, #000 0 14px, transparent 14px 28px);
 }
 
-@keyframes nudge {
-  50% {
-    transform: translate(3px, -50%);
-  }
+/* Cursor feedback for the tie in the hero. */
+body.near-tie,
+body.near-tie * {
+  cursor: grab !important;
 }
 
-@keyframes blink {
-  50% {
-    opacity: 0;
-  }
-}
-
-.visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
+body.dragging-tie,
+body.dragging-tie * {
+  cursor: grabbing !important;
+  user-select: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

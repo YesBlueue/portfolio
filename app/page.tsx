@@ -1,17 +1,14 @@
-import { Fragment } from "react";
 import { CopyEmail } from "@/components/CopyEmail";
-import { Ps1Head } from "@/components/Ps1Head";
-import { ReplayIntro } from "@/components/ReplayIntro";
-import { Stages } from "@/components/Stages";
-import { TitleScreen } from "@/components/TitleScreen";
+import { Portrait } from "@/components/Portrait";
 import { projects, site } from "@/lib/content";
 import styles from "./page.module.css";
+
+// Badge colors for the project numbers, in order.
+const BADGES = ["var(--rust)", "var(--moss)", "var(--camel)", "var(--wool-navy)"];
 
 export default function Home() {
   return (
     <>
-      <TitleScreen />
-
       <nav className={styles.nav} aria-label="Main">
         <div className={`inner ${styles.navInner}`}>
           <a className={styles.mark} href="#top" aria-label={`${site.name}, back to top`}>
@@ -19,17 +16,20 @@ export default function Home() {
           </a>
           <ul>
             <li>
-              <a className="sel" href="#work">
+              <a href="#projects">
+                <span className={styles.dot} style={{ background: "var(--rust)" }} />
                 Projects
               </a>
             </li>
             <li>
-              <a className="sel" href="#about">
-                Profile
+              <a href="#about">
+                <span className={styles.dot} style={{ background: "var(--mustard)" }} />
+                About
               </a>
             </li>
             <li>
-              <a className="sel" href="#contact">
+              <a href="#contact">
+                <span className={styles.dot} style={{ background: "var(--moss)" }} />
                 Contact
               </a>
             </li>
@@ -38,92 +38,112 @@ export default function Home() {
       </nav>
 
       <main>
-        <header className={styles.hero} id="top">
+        <header className={`${styles.hero} flannel`} id="top">
           <div className={`inner ${styles.heroInner}`}>
-            <div>
+            <Portrait src={site.portrait.src} alt={`Portrait of ${site.name}`} caption={site.portrait.caption} />
+            <div className={styles.label}>
               <p className={styles.kicker}>{site.kicker}</p>
-              <h1 className={styles.name}>
-                {site.name
-                  .toUpperCase()
-                  .split(" ")
-                  .map((word, i) => (
-                    <Fragment key={i}>
-                      {i > 0 && " "}
-                      <span>{word}</span>
-                    </Fragment>
-                  ))}
-              </h1>
+              <h1 className={styles.name}>{site.name}</h1>
               <p className={styles.lede}>{site.intro}</p>
-              <a className={styles.start} href="#work">
-                PRESS START
-              </a>
+              <div className={styles.actions}>
+                <a className={`${styles.btn} ${styles.primary}`} href="#projects">
+                  See my work
+                </a>
+                <a className={`${styles.btn} ${styles.ghost}`} href="#contact">
+                  Say hi
+                </a>
+                <span className={styles.note} aria-hidden="true">
+                  psst, tug the tie
+                </span>
+              </div>
             </div>
-            <figure className={styles.head}>
-              <Ps1Head label={`Low-poly 3D portrait of ${site.name}`} />
-            </figure>
           </div>
         </header>
 
-        <section className={styles.block} id="work" aria-labelledby="work-h">
+        <section className={`${styles.block} wool`} id="projects" aria-labelledby="projects-h">
           <div className="inner">
             <div className={styles.secHead}>
-              <h2 id="work-h">PROJECTS</h2>
-              <span>{projects.length} projects</span>
+              <h2 id="projects-h">Projects</h2>
+              <span>Things I&apos;ve built</span>
             </div>
-            <Stages projects={projects} />
+            <div className={styles.cards}>
+              {projects.map((p, i) => (
+                <article key={p.slug} className={styles.card} id={p.slug}>
+                  <div className={styles.cardTop}>
+                    <span className={styles.num} style={{ background: BADGES[i % BADGES.length] }}>
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className={styles.kind}>{p.kind}</span>
+                  </div>
+                  <h3>{p.name}</h3>
+                  <p className={styles.pitch}>{p.pitch}</p>
+                  <p>{p.description}</p>
+                  <span className={styles.role}>{p.role}</span>
+                  <div className={styles.chips}>
+                    {p.stack.map((s) => (
+                      <span key={s}>{s}</span>
+                    ))}
+                  </div>
+                  {(p.demo || p.source) && (
+                    <div className={styles.links}>
+                      {p.demo && (
+                        <a href={p.demo} target="_blank" rel="noreferrer">
+                          Play it
+                        </a>
+                      )}
+                      {p.source && (
+                        <a href={p.source} target="_blank" rel="noreferrer">
+                          Source
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </article>
+              ))}
+            </div>
           </div>
         </section>
 
-        <section className={styles.block} id="about" aria-labelledby="about-h">
+        <section className={`${styles.block} ${styles.aboutBlock} wool`} id="about" aria-labelledby="about-h">
           <div className="inner">
             <div className={styles.secHead}>
-              <h2 id="about-h">PROFILE</h2>
-              <span>About me</span>
+              <h2 id="about-h">About</h2>
+              <span>The short version</span>
             </div>
             <div className={styles.about}>
-              <div className={styles.aboutMain}>
-                <div>
-                  <p className={styles.lead}>{site.about.lead}</p>
-                  <p>{site.about.body}</p>
-                </div>
+              <div>
+                <p className={styles.big}>{site.about.lead}</p>
+                <p>{site.about.body}</p>
 
-                <div>
-                  <h3 className={styles.subhead}>EXPERIENCE</h3>
-                  <ul className={styles.entries}>
-                    {site.experience.map((e) => (
-                      <li key={e.title}>
-                        <div className={styles.entryHead}>
-                          <span className={styles.entryTitle}>{e.title}</span>
-                          <span className={styles.entryMeta}>{e.meta}</span>
-                        </div>
-                        {e.note && <p className={styles.entryNote}>{e.note}</p>}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                <h3 className={styles.mini}>Experience</h3>
+                <ul className={styles.list}>
+                  {site.experience.map((e) => (
+                    <li key={e.title}>
+                      <b>{e.title}</b>
+                      <span>{e.meta}</span>
+                      {e.note && <span className={styles.note2}>{e.note}</span>}
+                    </li>
+                  ))}
+                </ul>
 
-                <div>
-                  <h3 className={styles.subhead}>ACHIEVEMENTS</h3>
-                  <ul className={styles.entries}>
-                    {site.awards.map((a) => (
-                      <li key={a.title}>
-                        <div className={styles.entryHead}>
-                          <span className={styles.entryTitle}>{a.title}</span>
-                          <span className={styles.entryMeta}>{a.meta}</span>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                <h3 className={styles.mini}>Achievements</h3>
+                <ul className={styles.list}>
+                  {site.awards.map((a) => (
+                    <li key={a.title}>
+                      <b>{a.title}</b>
+                      <span>{a.meta}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
 
-              <div>
-                <h3 className={styles.subhead}>SKILLS</h3>
-                <dl className={styles.skills}>
+              <aside className={`${styles.patch} tweed`}>
+                <h3>Skills</h3>
+                <dl>
                   {site.skills.map((g) => (
                     <div key={g.label}>
                       <dt>{g.label}</dt>
-                      <dd className={styles.chips}>
+                      <dd>
                         {g.items.map((item) => (
                           <span key={item}>{item}</span>
                         ))}
@@ -131,35 +151,29 @@ export default function Home() {
                     </div>
                   ))}
                 </dl>
-              </div>
+              </aside>
             </div>
           </div>
         </section>
 
-        <section className={`${styles.block} ${styles.contact}`} id="contact" aria-labelledby="contact-h">
-          <div className="inner">
-            <h2 id="contact-h">CONTINUE?</h2>
-            <p className={styles.sub}>Want to work together, or just say hi? Send me an email.</p>
+        <section className={`${styles.contact} tweed`} id="contact" aria-labelledby="contact-h">
+          <div className={`inner ${styles.contactInner}`}>
+            <h2 id="contact-h">Let&apos;s talk</h2>
+            <p>Want to work together, or just say hi? Pull up a chair.</p>
             <CopyEmail email={site.email} />
-            <ul className={styles.elsewhere}>
-              <li>
-                <a className="sel" href={site.links.github} target="_blank" rel="noreferrer">
-                  GitHub
-                </a>
-              </li>
-              <li>
-                <a className="sel" href={site.links.linkedin} target="_blank" rel="noreferrer">
-                  LinkedIn
-                </a>
-              </li>
+            <div className={styles.links}>
+              <a href={site.links.github} target="_blank" rel="noreferrer">
+                GitHub
+              </a>
+              <a href={site.links.linkedin} target="_blank" rel="noreferrer">
+                LinkedIn
+              </a>
               {site.links.resume && (
-                <li>
-                  <a className="sel" href={site.links.resume} target="_blank" rel="noreferrer">
-                    Résumé
-                  </a>
-                </li>
+                <a href={site.links.resume} target="_blank" rel="noreferrer">
+                  Résumé
+                </a>
               )}
-            </ul>
+            </div>
           </div>
         </section>
       </main>
@@ -169,7 +183,7 @@ export default function Home() {
           <span>
             © {site.year} {site.name}
           </span>
-          <ReplayIntro className={styles.replay} />
+          <span>Made in Yangon</span>
         </div>
       </footer>
     </>
