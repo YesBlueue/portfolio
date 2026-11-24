@@ -104,6 +104,27 @@ button:focus-visible {
   mask-image: repeating-linear-gradient(90deg, #000 0 14px, transparent 14px 28px);
 }
 
+/* Laptops and desktops get the zipper (components/Zipper.tsx) instead of the browser's
+   scrollbar. It floats over the page, so nothing shifts when the intro ends. Phones keep
+   their own thin overlay scrollbars. */
+@media (hover: hover) and (pointer: fine) {
+  html {
+    scrollbar-width: none;
+  }
+  html::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* On narrower laptop windows, keep the content clear of the zipper (on both sides, so it
+   stays centred). */
+@media (hover: hover) and (pointer: fine) and (max-width: 1240px) {
+  .inner {
+    padding-left: 64px;
+    padding-right: 64px;
+  }
+}
+
 /* No scrolling while the knitted intro is still covering the page. */
 html:not([data-intro="done"]) {
   overflow: hidden;

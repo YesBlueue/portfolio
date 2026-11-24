@@ -31,6 +31,9 @@ export function Intro() {
       try {
         sessionStorage.setItem("knit", "1");
       } catch {}
+      // If the label is still on its way down, the intro stays in place (see-through and
+      // ignoring clicks) until it has fallen out of view.
+      if (peelAt) root.dataset.linger = "";
       timer = window.setTimeout(() => {
         html.dataset.intro = "done";
         knit.destroy();
@@ -41,15 +44,20 @@ export function Intro() {
     // it peels forward, hinged on its bottom edge; when it reaches the bottom the label
     // comes free and flutters down like a scrap of cloth: swaying, tilting and tumbling
     // back and forth, picking up speed as it goes.
-    let peelAt = 0, fallAt = 0, box: DOMRect | null = null;
-    const fall = (edge: number) => {
+    let peelAt = 0, fallAt = 0, edge = 0, raf = 0, box: DOMRect | null = null;
+    const watch = (e: number) => {
+      edge = e;
       box ??= label.getBoundingClientRect();
-      const now = performance.now();
       if (!peelAt && edge > box.top + 4) {
-        peelAt = now;
+        peelAt = performance.now();
         label.dataset.falling = "";
+        // From here the label runs on its own clock, so it can keep falling after the
+        // knitting is gone.
+        raf = requestAnimationFrame(fall);
       }
-      if (!peelAt) return;
+    };
+    const fall = (now: number) => {
+      if (!box) return;
       if (!fallAt && edge > box.bottom - 6) fallAt = Math.max(now, peelAt + 260);
 
       // Peel: tip forward off the fabric, overshoot a little, settle.
@@ -73,11 +81,18 @@ export function Intro() {
         `rotate(${rz.toFixed(2)}deg) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
       // Further off the fabric, softer and further shadow.
       label.style.boxShadow = `0 ${8 + lift * 14}px ${16 + lift * 18}px -8px rgba(20, 8, 4, ${0.75 - lift * 0.2})`;
+
+      // Gone past the bottom of the screen (with room for its tumble): done.
+      if (box.top + y > window.innerHeight + 60) {
+        delete root.dataset.linger;
+        return;
+      }
+      raf = requestAnimationFrame(fall);
     };
 
     const knit = startKnit(canvas, {
-      onFrame(_x, _y, edge) {
-        fall(edge);
+      onFrame(_x, _y, e) {
+        watch(e);
       },
       onGrab() {
         root.dataset.stage = "pulling";
@@ -104,6 +119,7 @@ export function Intro() {
       window.removeEventListener("keydown", onKey);
       clearTimeout(timer);
       clearTimeout(start);
+      cancelAnimationFrame(raf);
       knit.destroy();
     };
   }, []);

@@ -1,0 +1,77 @@
+/* Floats a little in from the right edge, below the nav bar. Laptops and desktops only. */
+.zipper {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .zipper[data-on] {
+    display: block;
+    position: fixed;
+    z-index: 60;
+    top: 64px;
+    bottom: 12px;
+    right: 6px;
+    width: 60px;
+    transition: transform 0.7s cubic-bezier(0.2, 0.9, 0.25, 1.15), opacity 0.4s ease;
+  }
+}
+
+/* Hidden behind the right edge while the intro is up, then slides in. */
+:global(html:not([data-intro="done"])) .zipper {
+  transform: translateX(70px);
+  opacity: 0;
+}
+
+.canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+/* Little woven tags marking each section, shown while scrolling or hovering the zipper. */
+.tag {
+  position: absolute;
+  right: 56px;
+  translate: 0 -50%;
+  padding: 3px 9px 3px 10px;
+  border: 0;
+  border-radius: 2px;
+  background: var(--cream);
+  color: var(--cocoa);
+  font: 700 11px/1.3 var(--f-body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  outline: 1px dashed rgba(51, 36, 28, 0.35);
+  outline-offset: -3px;
+  box-shadow: 0 4px 10px -4px rgba(20, 8, 4, 0.6);
+  opacity: 0;
+  transform: translateX(8px) rotate(-1.5deg);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease, background 0.15s ease;
+}
+
+.tag:nth-of-type(2n) {
+  transform: translateX(8px) rotate(1.2deg);
+}
+
+/* "Awake" while scrolling or hovered, and for a few seconds after (see lib/zipper.ts). */
+.zipper[data-awake] .tag,
+.zipper:hover .tag,
+.zipper[data-dragging] .tag {
+  opacity: 1;
+  transform: translateX(0) rotate(-1.5deg);
+  pointer-events: auto;
+}
+
+.zipper[data-awake] .tag:nth-of-type(2n),
+.zipper:hover .tag:nth-of-type(2n),
+.zipper[data-dragging] .tag:nth-of-type(2n) {
+  transform: translateX(0) rotate(1.2deg);
+}
+
+.tag:hover {
+  background: var(--mustard);
+}

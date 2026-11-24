@@ -7,19 +7,25 @@
   user-select: none;
   /* Shown until the knitting is drawn. */
   background: #7d3a24 var(--fuzz);
-  transition: opacity 0.55s ease;
 }
 
 .intro[data-ready] {
   background: transparent;
 }
 
+/* Fading out: the knitting goes, but a label that's still falling stays solid. */
 .intro[data-stage="out"] {
-  opacity: 0;
+  background: transparent;
   pointer-events: none;
 }
 
-:global(html[data-intro="done"]) .intro {
+.intro[data-stage="out"] .canvas,
+.intro[data-stage="out"] .label:not([data-falling]) {
+  opacity: 0;
+  transition: opacity 0.55s ease;
+}
+
+:global(html[data-intro="done"]) .intro:not([data-linger]) {
   display: none;
 }
 
