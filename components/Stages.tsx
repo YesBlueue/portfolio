@@ -4,7 +4,7 @@ import { useState } from "react";
 import type { Project } from "@/lib/content";
 import styles from "./Stages.module.css";
 
-/** Projects as stages. Each one opens in place to show details and links. */
+/** Project list. Each one opens in place to show details and links. */
 export function Stages({ projects }: { projects: Project[] }) {
   const [open, setOpen] = useState<string | null>(null);
 
@@ -22,7 +22,9 @@ export function Stages({ projects }: { projects: Project[] }) {
               aria-controls={panelId}
               onClick={() => setOpen(isOpen ? null : p.slug)}
             >
-              <span className={styles.stage}>STAGE {i + 1}</span>
+              <span className={styles.stage} aria-hidden="true">
+                {String(i + 1).padStart(2, "0")}
+              </span>
               <span className={styles.name}>
                 {p.name}
                 <span className={styles.pitch}>{p.pitch}</span>

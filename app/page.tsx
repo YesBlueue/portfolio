@@ -20,7 +20,7 @@ export default function Home() {
           <ul>
             <li>
               <a className="sel" href="#work">
-                Levels
+                Projects
               </a>
             </li>
             <li>
@@ -67,7 +67,7 @@ export default function Home() {
         <section className={styles.block} id="work" aria-labelledby="work-h">
           <div className="inner">
             <div className={styles.secHead}>
-              <h2 id="work-h">SELECT STAGE</h2>
+              <h2 id="work-h">PROJECTS</h2>
               <span>{projects.length} projects</span>
             </div>
             <Stages projects={projects} />
@@ -78,7 +78,7 @@ export default function Home() {
           <div className="inner">
             <div className={styles.secHead}>
               <h2 id="about-h">PROFILE</h2>
-              <span>Player 1</span>
+              <span>About me</span>
             </div>
             <div className={styles.about}>
               <div className={styles.aboutMain}>
@@ -138,7 +138,7 @@ export default function Home() {
 
         <section className={`${styles.block} ${styles.contact}`} id="contact" aria-labelledby="contact-h">
           <div className="inner">
-            <h2 id="contact-h">CONTINUE?</h2>
+            <h2 id="contact-h">CONTACT</h2>
             <p className={styles.sub}>Want to work together, or just say hi? Send me an email.</p>
             <CopyEmail email={site.email} />
             <ul className={styles.elsewhere}>
