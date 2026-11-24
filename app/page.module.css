@@ -682,10 +682,121 @@
 }
 
 /* about */
+/* Text on the left; on the right, one patch holding the photo and the skills. The patch
+   stretches to the height of the text, so both sides end on the same line. */
 .about {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
-  gap: 48px;
+  grid-template-areas: "text skills";
+  column-gap: 48px;
+  row-gap: 30px;
+}
+
+.aboutText {
+  grid-area: text;
+}
+
+/* Narrower windows don't have room for a good photo beside the text, so stack it like on
+   phones: the patch with the photo first, then the story. */
+@media (max-width: 1100px) {
+  .about {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "skills"
+      "text";
+  }
+  .patch.skills {
+    justify-self: center;
+    width: min(100%, 460px);
+  }
+}
+
+.patch.skills {
+  grid-area: skills;
+  align-self: stretch;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  outline: none;
+}
+
+/* The patch's own stitching, drawn under the pocket. */
+.patch.skills::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 10px;
+  border: 2px dashed rgba(250, 244, 234, 0.35);
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+/* The pocket: a print tucked into a band of flannel, like on the project cards. It takes
+   whatever height the text column leaves over, so the skills below stay compact. */
+.aboutPocket {
+  position: relative;
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  margin: -6px -30px 22px;
+  padding: 0 30px;
+}
+
+.aboutPocket .swatch {
+  height: 70px;
+}
+
+.skills:hover .snap {
+  transform: translateY(-12px) rotate(0.6deg);
+}
+
+/* The photo, as a print like the one in the hero, tilted the other way. */
+.snap {
+  position: relative;
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  width: min(300px, 88%);
+  margin: 0 auto 26px;
+  padding: 10px 10px 12px;
+  background: #fffaf1;
+  border-radius: 4px;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.06), 0 18px 30px -16px rgba(10, 14, 4, 0.7);
+  transform: rotate(2deg);
+  transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.25, 1.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .snap {
+    transition: none;
+  }
+}
+
+/* At least 4:5, and taller when there's room; the photo is cropped to fill. */
+.snap img,
+.snapBlank {
+  display: block;
+  flex: 1 0 auto;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: center 30%;
+  border-radius: 2px;
+}
+
+.snapBlank {
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(255, 255, 255, 0.55), transparent 70%),
+    repeating-linear-gradient(45deg, rgba(192, 138, 85, 0.09) 0 2px, transparent 2px 9px),
+    var(--oat);
+  outline: 1.5px dashed rgba(51, 36, 28, 0.28);
+  outline-offset: -10px;
+  font: 600 28px var(--f-hand);
+  color: var(--cocoa-soft);
 }
 
 .about p {
@@ -849,6 +960,12 @@
   .cards,
   .about {
     grid-template-columns: 1fr;
+  }
+  /* Phones: the patch with the photo first, then the story. */
+  .about {
+    grid-template-areas:
+      "skills"
+      "text";
   }
   .navInner ul a {
     padding: 7px 10px;

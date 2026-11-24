@@ -202,7 +202,7 @@ export default function Home() {
               <span>The short version</span>
             </div>
             <div className={styles.about}>
-              <div>
+              <div className={styles.aboutText}>
                 <p className={styles.big}>{site.about.lead}</p>
                 <p>{site.about.body}</p>
 
@@ -228,7 +228,26 @@ export default function Home() {
                 </ul>
               </div>
 
-              <aside className={`${styles.patch} tweed`}>
+              {/* One patch: the photo tucked into a flannel pocket, the skills below. */}
+              <aside className={`${styles.patch} ${styles.skills} tweed`}>
+                <div className={styles.aboutPocket}>
+                  <figure className={styles.snap}>
+                    {site.about.photo ? (
+                      <Image
+                        src={site.about.photo.src}
+                        alt={site.about.photo.alt}
+                        width={site.about.photo.width}
+                        height={site.about.photo.height}
+                        sizes="(max-width: 860px) 70vw, 300px"
+                      />
+                    ) : (
+                      <span className={styles.snapBlank}>Photo coming soon</span>
+                    )}
+                  </figure>
+                  <div className={styles.swatch} aria-hidden="true">
+                    <div data-fabric="flannel" />
+                  </div>
+                </div>
                 <h3>Skills</h3>
                 <dl>
                   {site.skills.map((g) => (
