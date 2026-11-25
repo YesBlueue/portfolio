@@ -12,13 +12,6 @@
   pointer-events: none;
 }
 
-/* Wrappers carry the shadow, so it falls along each cloth's cut edge into the gap. */
-.shade {
-  position: absolute;
-  inset: 0;
-  filter: drop-shadow(0 0 7px rgba(0, 0, 0, 0.65));
-}
-
 .piece {
   position: absolute;
   inset: 0 0 -12px;
@@ -44,12 +37,23 @@
   background-blend-mode: soft-light, normal, normal;
 }
 
-.seam {
+/* The strip over the seam: the only part that redraws, on its own layer. */
+.strip {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  top: 0;
   overflow: visible;
+  will-change: transform;
+}
+
+/* The open seam: dark, with the cloth edges casting a soft shadow into it. */
+.gap {
+  fill: #0c0806;
+}
+.edgeShadow {
+  fill: none;
+  stroke: rgba(0, 0, 0, 0.35);
+  stroke-width: 9;
+  stroke-linejoin: round;
 }
 
 /* Crossing stitches in rust thread, pulling the two pieces together. */
@@ -58,7 +62,13 @@
   stroke: var(--rust);
   stroke-width: 2.6;
   stroke-linecap: round;
-  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.5));
+}
+.stitchShadow {
+  fill: none;
+  stroke: rgba(0, 0, 0, 0.5);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  transform: translateY(1.2px);
 }
 
 /* Holes punched along both edges, waiting for the needle. */
@@ -72,7 +82,7 @@
 .needle {
   transition: opacity 0.3s ease;
 }
-.needle path:not(.trail) {
+.needle .blade {
   fill: #c9ccd2;
   stroke: #7d8189;
   stroke-width: 0.8;
@@ -114,8 +124,8 @@
   display: grid;
   grid-template-columns: 1fr 70px 1fr;
   align-items: center;
-  min-height: 120px;
-  padding: 10px 0;
+  min-height: 150px;
+  padding: 12px 0;
 }
 
 /* An invisible marker on the seam, used to line the labels up with it. */
@@ -134,10 +144,10 @@
   grid-row: 1;
   justify-self: end;
   display: grid;
-  grid-template-columns: 112px 1fr;
-  gap: 14px;
+  grid-template-columns: 200px 1fr;
+  gap: 16px;
   align-items: center;
-  width: min(420px, 100%);
+  width: min(500px, 100%);
   padding: 12px 16px 12px 12px;
   background: var(--cream);
   color: var(--cocoa);
@@ -200,8 +210,8 @@
     repeating-linear-gradient(45deg, rgba(192, 138, 85, 0.09) 0 2px, transparent 2px 9px),
     var(--oat);
   outline: 1.5px dashed rgba(51, 36, 28, 0.25);
-  outline-offset: -5px;
-  font: 600 18px var(--f-hand);
+  outline-offset: -6px;
+  font: 600 24px var(--f-hand);
   color: var(--cocoa-soft);
 }
 
@@ -245,11 +255,13 @@
   .knot {
     grid-column: 1;
   }
+  /* Photo on top, full width of the label. */
   .tag,
   .row:nth-child(even) .tag {
     grid-column: 2;
     justify-self: stretch;
-    grid-template-columns: 84px 1fr;
+    grid-template-columns: 1fr;
+    gap: 10px;
     width: auto;
     max-width: 420px;
   }
