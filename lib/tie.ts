@@ -2,8 +2,11 @@
 //
 // A chain of points hangs from the knot (verlet physics). It sways a little on its own,
 // gets pushed by quick cursor movement, and can be grabbed, dragged and flung.
-// Coordinates are in the photo's own pixels. The tie layer extends PAD_X pixels to each
-// side and down to LAYER_H times the photo height, so the tie can hang out of the frame.
+// Coordinates are in "tie units": the photo is treated as IMG_W x IMG_H. The real photo is
+// 2000 x 2000; at 1.66 photo pixels per unit (measured from the glasses, which span 605 px
+// in this photo and 365 in the old one) the tie keeps its size relative to the person.
+// The tie layer extends PAD_X units to each side and down to LAYER_H times the photo
+// height, so the tie can hang out of the frame.
 //
 // Look: matched to the tie in the portrait. A heathered chocolate-brown weave with thin
 // double stripes (a pale pinkish-cream line and a dimmer twin) running diagonally from
@@ -11,16 +14,32 @@
 // bend with the tie, and it is shaded as a slightly rounded blade with creases where it
 // bends, a soft shadow cast on whatever is behind it, and a knot with a dimple under it.
 //
-// The current stand-in photo has a tie printed in it, so we paint shirt fabric over that
-// area first. With a final photo taken without a tie, set COVER_PRINTED_TIE to false.
+// The old stand-in photo had a tie printed in it, so shirt fabric could be painted over
+// that area first (COVER_PRINTED_TIE). The current photo has no tie, so it's off.
 
-export const IMG_W = 1206;
-export const IMG_H = 1280;
+export const IMG_W = 1205;
+export const IMG_H = 1205;
 export const PAD_X = 400;
 export const LAYER_H = 1.6;
 
-const COVER_PRINTED_TIE = true;
-const KNOT = { x: 603, y: 968 }; // bottom of the knot, where the blade hangs from
+const COVER_PRINTED_TIE = false;
+// Bottom of the knot, where the blade hangs from. The knot's top sits on the collar band
+// (about 1072, 1350 in the 2000 px photo) with its corners tucked under the collar points.
+const KNOT = { x: 646, y: 904 };
+
+// Half-Windsor knot: a neat, symmetrical triangle, in tie units around KNOT.
+const KNOT_H = 92; // height
+const KNOT_TOP = 58; // half-width across the top
+const KNOT_BOTTOM = 37; // half-width at the bottom, just over the blade's (36)
+
+// The collar points and the back of the collar, traced in the 2000 px photo. They get
+// painted back over the knot from the photo itself, so the knot sits under the collar.
+const PHOTO_PX = 2000;
+const COLLAR: P2[] = [
+  [880, 1300], [1212, 1300], [1212, 1420], [1192, 1484], [1158, 1478], [1135, 1440],
+  [1110, 1400], [1094, 1366], [1090, 1346], [1052, 1346], [1048, 1360], [1040, 1382],
+  [1000, 1424], [965, 1462], [935, 1478], [905, 1482], [880, 1440],
+];
 const N = 16; // points along the blade
 const SEG = 40; // spacing between points
 const STEP_MS = 1000 / 60;
@@ -321,13 +340,27 @@ export function startTie(canvas: HTMLCanvasElement, photo: HTMLElement): () => v
     c.closePath();
   }
 
+  /** The half-Windsor knot, drawn with its bottom centre at (0, 0). */
   function knotPath(c: CanvasRenderingContext2D) {
+    const h = KNOT_H, t = KNOT_TOP, b = KNOT_BOTTOM;
     c.beginPath();
-    c.moveTo(551, 886);
-    c.quadraticCurveTo(603, 872, 655, 886);
-    c.quadraticCurveTo(648, 934, 634, 972);
-    c.quadraticCurveTo(603, 984, 572, 972);
-    c.quadraticCurveTo(558, 934, 551, 886);
+    c.moveTo(-t, -h);
+    c.quadraticCurveTo(0, -h - 6, t, -h);
+    c.quadraticCurveTo(t - 4, -h * 0.42, b, -2);
+    c.quadraticCurveTo(0, 9, -b, -2);
+    c.quadraticCurveTo(-(t - 4), -h * 0.42, -t, -h);
+    c.closePath();
+  }
+
+  // The photo itself, used to paint the collar back over the knot.
+  const photoImg = photo.querySelector("img");
+  // With reduced motion the tie only redraws on demand, so draw again once the photo is in.
+  if (photoImg && !photoImg.complete) photoImg.addEventListener("load", () => reduce && draw(), { once: true });
+
+  function collarPath(c: CanvasRenderingContext2D) {
+    const k = IMG_W / PHOTO_PX;
+    c.beginPath();
+    COLLAR.forEach(([x, y], i) => (i ? c.lineTo(x * k, y * k) : c.moveTo(x * k, y * k)));
     c.closePath();
   }
 
@@ -485,7 +518,9 @@ export function startTie(canvas: HTMLCanvasElement, photo: HTMLElement): () => v
     ctx.lineWidth = 2;
     ctx.stroke();
 
-    // 4. The knot: rounded, with its own shadow on the blade and the shirt.
+    // 4. The knot: a half-Windsor, with its own shadow on the blade and the shirt.
+    ctx.save();
+    ctx.translate(KNOT.x, KNOT.y);
     ctx.save();
     knotPath(ctx);
     ctx.shadowColor = "rgba(8,4,2,.5)";
@@ -498,32 +533,80 @@ export function startTie(canvas: HTMLCanvasElement, photo: HTMLElement): () => v
     ctx.save();
     knotPath(ctx);
     ctx.clip();
+    const box: [number, number, number, number] = [-KNOT_TOP - 10, -KNOT_H - 12, KNOT_TOP * 2 + 20, KNOT_H + 24];
     if (knotFabric) {
-      // The knot wraps across the tie, so its stripes sit at a different angle.
-      knotFabric.setTransform(new DOMMatrix().translate(560, 880).rotate(-58).scale(1 / TEX_SCALE));
+      // The wrap crosses the blade, so the knot's stripes run at a different angle.
+      knotFabric.setTransform(new DOMMatrix().translate(-48, -90).rotate(-58).scale(1 / TEX_SCALE));
       ctx.fillStyle = knotFabric;
-      ctx.fillRect(540, 870, 130, 120);
+      ctx.fillRect(...box);
     }
-    // Rounded volume: dark under the collar, lighter in the middle, dark at the sides.
-    const kv = ctx.createLinearGradient(0, 884, 0, 978);
-    kv.addColorStop(0, "rgba(8,4,2,.6)");
-    kv.addColorStop(0.3, "rgba(8,4,2,.08)");
-    kv.addColorStop(0.55, "rgba(255,236,222,.12)");
-    kv.addColorStop(1, "rgba(8,4,2,.35)");
+    // Volume: shadowed where it tucks under the collar, light across the middle, darker
+    // as it turns under at the bottom; darker at the folded sides.
+    const kv = ctx.createLinearGradient(0, -KNOT_H, 0, 4);
+    kv.addColorStop(0, "rgba(8,4,2,.62)");
+    kv.addColorStop(0.22, "rgba(8,4,2,.1)");
+    kv.addColorStop(0.5, "rgba(255,236,222,.13)");
+    kv.addColorStop(1, "rgba(8,4,2,.38)");
     ctx.fillStyle = kv;
-    ctx.fillRect(540, 870, 130, 120);
-    const kh = ctx.createLinearGradient(556, 0, 650, 0);
+    ctx.fillRect(...box);
+    const kh = ctx.createLinearGradient(-KNOT_TOP, 0, KNOT_TOP, 0);
     kh.addColorStop(0, "rgba(8,4,2,.55)");
-    kh.addColorStop(0.3, "rgba(8,4,2,0)");
-    kh.addColorStop(0.7, "rgba(8,4,2,0)");
+    kh.addColorStop(0.28, "rgba(8,4,2,0)");
+    kh.addColorStop(0.72, "rgba(8,4,2,0)");
     kh.addColorStop(1, "rgba(8,4,2,.5)");
     ctx.fillStyle = kh;
-    ctx.fillRect(540, 870, 130, 120);
+    ctx.fillRect(...box);
+    // The half-Windsor's wrap: one diagonal fold across the face, upper left to lower right.
+    ctx.beginPath();
+    ctx.moveTo(-KNOT_TOP + 6, -KNOT_H + 8);
+    ctx.quadraticCurveTo(-8, -KNOT_H * 0.55, KNOT_BOTTOM - 6, -10);
+    ctx.strokeStyle = "rgba(10,5,3,.5)";
+    ctx.lineWidth = 3.5;
+    ctx.stroke();
+    ctx.translate(-2.5, -3);
+    ctx.strokeStyle = "rgba(255,232,214,.16)";
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
     ctx.restore();
     knotPath(ctx);
     ctx.strokeStyle = "rgba(28,16,12,.6)";
     ctx.lineWidth = 2;
     ctx.stroke();
+    ctx.restore();
+
+    // 5. The collar, painted back over the knot from the photo, with a soft shadow on it.
+    // Both happen only inside the knot, so the patch's edges are the knot's own outline.
+    if (photoImg && photoImg.complete && photoImg.naturalWidth) {
+      const inKnot = () => {
+        ctx.translate(KNOT.x, KNOT.y);
+        knotPath(ctx);
+        ctx.translate(-KNOT.x, -KNOT.y);
+        ctx.clip();
+      };
+      ctx.save();
+      inKnot();
+      collarPath(ctx);
+      ctx.shadowColor = "rgba(5,8,20,.6)";
+      ctx.shadowBlur = 9;
+      ctx.shadowOffsetY = 4;
+      ctx.fillStyle = "#1b2440";
+      ctx.fill();
+      ctx.restore();
+      ctx.save();
+      inKnot();
+      collarPath(ctx);
+      ctx.clip();
+      ctx.drawImage(photoImg, 0, 0, IMG_W, IMG_H);
+      // The same warm wash the photo has (Portrait.module.css, .photo::after).
+      const wash = ctx.createLinearGradient(IMG_W * 0.33, 0, IMG_W * 0.67, IMG_H);
+      wash.addColorStop(0, "rgba(255,175,95,.2)");
+      wash.addColorStop(0.45, "rgba(255,175,95,0)");
+      wash.addColorStop(1, "rgba(70,40,30,.15)");
+      ctx.globalCompositeOperation = "soft-light";
+      ctx.fillStyle = wash;
+      ctx.fillRect(0, 0, IMG_W, IMG_H);
+      ctx.restore();
+    }
   }
 
   resize();

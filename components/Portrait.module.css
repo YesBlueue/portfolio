@@ -17,7 +17,7 @@
 
 .photo {
   position: relative;
-  aspect-ratio: 1206 / 1280;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
   border-radius: 2px;
   filter: sepia(0.1) saturate(1.05) contrast(1.03);
@@ -43,12 +43,12 @@
 }
 
 /* Bigger than the photo, so the tie can hang out past the frame.
-   Matches PAD_X (400 of 1206 px each side) and LAYER_H (1.6) in lib/tie.ts. */
+   Matches PAD_X (400 of 1205 units each side) and LAYER_H (1.6) in lib/tie.ts. */
 .tie {
   position: absolute;
-  left: -33.167%;
+  left: -33.195%;
   top: 0;
-  width: 166.333%;
+  width: 166.39%;
   height: 160%;
   pointer-events: none;
   z-index: 3;
