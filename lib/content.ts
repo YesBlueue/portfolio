@@ -18,6 +18,16 @@ export type Project = {
 
 export type Entry = { title: string; meta: string; note?: string };
 
+/** A stop on the journey timeline. Add `image` once there's a photo for it. */
+export type Milestone = {
+  when: string;
+  title: string;
+  note: string;
+  image?: { src: string; alt: string; width: number; height: number };
+  /** The last stop: where things are heading. */
+  next?: boolean;
+};
+
 export const site = {
   name: "Thaw Thaw Tun",
   initials: "TTT",
@@ -70,6 +80,20 @@ export const site = {
     { label: "Currently learning", items: ["Machine Learning", "AI Engineering", "Java"] },
   ],
 };
+
+// The journey timeline, oldest first.
+// TODO: confirm the dates (the ones here are placeholders) and add photos.
+export const journey: Milestone[] = [
+  { when: "2023", title: "Started Computer Science at UIT", note: "University of Information Technology, Yangon." },
+  { when: "Early 2024", title: "Prize for 2nd highest marks", note: "Batch 12, first year at UIT." },
+  { when: "2024", title: "Built MaMa WaWa", note: "My first team project: a learning platform for kids." },
+  { when: "2024", title: "Founded Learnabyte", note: "A study community that's grown past 180 members." },
+  { when: "2024", title: "Youth Leadership Summit semi-finalist", note: "ASEAN-China-India, OSG Youth Alliance." },
+  { when: "2025", title: "ASEAN Digital Awards national finalist", note: "Myanmar Computer Federation." },
+  { when: "Early 2026", title: "3rd place, UIT Innovative Hackathon", note: "And champion of the impromptu talk contest." },
+  { when: "Jun – Oct 2026", title: "IT intern, Grand Royal Group", note: "Full-stack work and computer vision models." },
+  { when: "Next", title: "Machine learning & AI", note: "Where the thread goes next.", next: true },
+];
 
 export const projects: Project[] = [
   {

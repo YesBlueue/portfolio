@@ -7,6 +7,7 @@ import styles from "./Zipper.module.css";
 const STOPS = [
   { id: "projects", label: "Projects" },
   { id: "about", label: "About" },
+  { id: "journey", label: "Journey" },
   { id: "contact", label: "Contact" },
 ];
 

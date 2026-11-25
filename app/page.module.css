@@ -51,6 +51,32 @@
   border-radius: 50%;
 }
 
+/* Small phones: four links have to fit beside the initials. */
+@media (max-width: 480px) {
+  .navInner {
+    gap: 8px;
+  }
+  .navInner ul {
+    gap: 0;
+  }
+  .navInner ul a,
+  .navInner ul a:is(a) {
+    gap: 5px;
+    padding: 7px 7px;
+    font-size: 14px;
+  }
+  .dot {
+    width: 7px;
+    height: 7px;
+  }
+}
+
+@media (max-width: 370px) {
+  .dot {
+    display: none;
+  }
+}
+
 /* ---------- hero (flannel) ---------- */
 .hero {
   position: relative;

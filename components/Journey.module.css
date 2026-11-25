@@ -1,0 +1,268 @@
+/* The section is the dark gap you see between the two cloths before they're sewn. */
+.section {
+  position: relative;
+  overflow: hidden;
+  background: #120d0a;
+  color: var(--cream);
+}
+
+.cloth {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Wrappers carry the shadow, so it falls along each cloth's cut edge into the gap. */
+.shade {
+  position: absolute;
+  inset: 0;
+  filter: drop-shadow(0 0 7px rgba(0, 0, 0, 0.65));
+}
+
+.piece {
+  position: absolute;
+  inset: 0 0 -12px;
+  background-size: 200px 200px, auto, auto;
+}
+
+/* Two dark wools with only a faint weave. */
+.left {
+  background-color: #35251c;
+  background-image:
+    var(--fuzz),
+    repeating-linear-gradient(45deg, rgba(255, 228, 196, 0.035) 0 1px, transparent 1px 5px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.18), transparent 30%);
+  background-blend-mode: soft-light, normal, normal;
+}
+
+.right {
+  background-color: #222a20;
+  background-image:
+    var(--fuzz),
+    repeating-linear-gradient(-45deg, rgba(214, 232, 196, 0.035) 0 1px, transparent 1px 5px),
+    linear-gradient(270deg, rgba(0, 0, 0, 0.18), transparent 30%);
+  background-blend-mode: soft-light, normal, normal;
+}
+
+.seam {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Crossing stitches in rust thread, pulling the two pieces together. */
+.stitches {
+  fill: none;
+  stroke: var(--rust);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.5));
+}
+
+/* Holes punched along both edges, waiting for the needle. */
+.holes {
+  fill: none;
+  stroke: rgba(0, 0, 0, 0.55);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.needle {
+  transition: opacity 0.3s ease;
+}
+.needle path:not(.trail) {
+  fill: #c9ccd2;
+  stroke: #7d8189;
+  stroke-width: 0.8;
+}
+.needle ellipse {
+  fill: #120d0a;
+  stroke: #7d8189;
+  stroke-width: 0.6;
+}
+.needle .trail {
+  fill: none;
+  stroke: var(--rust);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.inner {
+  position: relative;
+  padding-block: 84px 72px;
+}
+
+/* The section heading, light on the dark cloth. */
+.inner h2 {
+  color: var(--cream);
+}
+.inner h2 + span {
+  color: #cdbba4;
+}
+
+.list {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Labels alternate either side of the seam. */
+.row {
+  display: grid;
+  grid-template-columns: 1fr 70px 1fr;
+  align-items: center;
+  min-height: 120px;
+  padding: 10px 0;
+}
+
+/* An invisible marker on the seam, used to line the labels up with it. */
+.knot {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: center;
+  width: 14px;
+  height: 14px;
+  visibility: hidden;
+}
+
+/* A woven label, stitched onto the cloth. */
+.tag {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: end;
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  gap: 14px;
+  align-items: center;
+  width: min(420px, 100%);
+  padding: 12px 16px 12px 12px;
+  background: var(--cream);
+  color: var(--cocoa);
+  border-radius: 3px;
+  outline: 1.5px dashed rgba(51, 36, 28, 0.32);
+  outline-offset: -6px;
+  box-shadow: 0 14px 26px -14px rgba(0, 0, 0, 0.8);
+  transform: rotate(-1.2deg);
+  transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.3s ease;
+}
+
+.row:nth-child(even) .tag {
+  grid-column: 3;
+  justify-self: start;
+  transform: rotate(1.2deg);
+}
+
+.text {
+  min-width: 0;
+}
+
+/* Once the script is running: labels wait faded until the seam reaches them. */
+.section[data-live] .row[data-sewn="false"] .tag {
+  opacity: 0.3;
+  transform: rotate(-1.2deg) translateY(10px);
+}
+.section[data-live] .row[data-sewn="false"]:nth-child(even) .tag {
+  transform: rotate(1.2deg) translateY(10px);
+}
+.row[data-current="true"] .tag {
+  box-shadow: 0 0 0 3px rgba(224, 168, 62, 0.55), 0 14px 26px -14px rgba(0, 0, 0, 0.8);
+}
+
+/* A little photo print on each label. */
+.photo {
+  margin: 0;
+  padding: 5px 5px 7px;
+  background: #fffaf1;
+  border-radius: 2px;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06), 0 6px 12px -8px rgba(40, 18, 8, 0.5);
+  transform: rotate(1deg);
+}
+.row:nth-child(even) .photo {
+  transform: rotate(-1deg);
+}
+.photo img,
+.blank {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 1px;
+}
+.blank {
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(255, 255, 255, 0.55), transparent 70%),
+    repeating-linear-gradient(45deg, rgba(192, 138, 85, 0.09) 0 2px, transparent 2px 9px),
+    var(--oat);
+  outline: 1.5px dashed rgba(51, 36, 28, 0.25);
+  outline-offset: -5px;
+  font: 600 18px var(--f-hand);
+  color: var(--cocoa-soft);
+}
+
+.when {
+  margin: 0;
+  font: 800 12px var(--f-body);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--rust);
+}
+.title {
+  margin: 2px 0 4px;
+  font: 800 19px/1.2 var(--f-head);
+}
+.note {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--cocoa-soft);
+}
+
+/* The last stop: a darker label, still waiting to be sewn on. */
+.tag.next {
+  background: #4a3428;
+  color: var(--cream);
+  outline-color: rgba(250, 244, 234, 0.35);
+}
+.tag.next .when {
+  color: var(--mustard);
+}
+.tag.next .note {
+  color: #d8c8b4;
+}
+
+/* Phones: the seam runs down the left, labels to its right. */
+@media (max-width: 760px) {
+  .row {
+    grid-template-columns: 36px 1fr;
+    min-height: 0;
+  }
+  .knot {
+    grid-column: 1;
+  }
+  .tag,
+  .row:nth-child(even) .tag {
+    grid-column: 2;
+    justify-self: stretch;
+    grid-template-columns: 84px 1fr;
+    width: auto;
+    max-width: 420px;
+  }
+}
+
+@media (max-width: 860px) {
+  .inner {
+    padding-block: 64px 56px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tag {
+    transition: none;
+  }
+}

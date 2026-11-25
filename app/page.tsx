@@ -3,11 +3,12 @@ import type { CSSProperties } from "react";
 import { CardFit } from "@/components/CardFit";
 import { CopyEmail } from "@/components/CopyEmail";
 import { Intro } from "@/components/Intro";
+import { Journey } from "@/components/Journey";
 import { Portrait } from "@/components/Portrait";
 import { ReKnit } from "@/components/ReKnit";
 import { Spool } from "@/components/Spool";
 import { Zipper } from "@/components/Zipper";
-import { projects, site } from "@/lib/content";
+import { journey, projects, site } from "@/lib/content";
 import styles from "./page.module.css";
 
 // Each project card gets its own cloth (the pocket) and thread color (the button, the
@@ -75,6 +76,12 @@ export default function Home() {
               <a href="#about">
                 <span className={styles.dot} style={{ background: "var(--mustard)" }} />
                 About
+              </a>
+            </li>
+            <li>
+              <a href="#journey">
+                <span className={styles.dot} style={{ background: "var(--camel)" }} />
+                Journey
               </a>
             </li>
             <li>
@@ -270,6 +277,16 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        <Journey
+          milestones={journey}
+          head={
+            <div className={styles.secHead}>
+              <h2 id="journey-h">Journey</h2>
+              <span>How I got here, one stitch at a time</span>
+            </div>
+          }
+        />
 
         <section className={`${styles.contact} tweed`} id="contact" aria-labelledby="contact-h">
           <div className={`inner ${styles.contactInner}`}>
