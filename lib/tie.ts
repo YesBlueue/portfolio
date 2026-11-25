@@ -27,10 +27,11 @@ const COVER_PRINTED_TIE = false;
 // (about 1072, 1350 in the 2000 px photo) with its corners tucked under the collar points.
 const KNOT = { x: 646, y: 904 };
 
-// Half-Windsor knot: a neat, symmetrical triangle, in tie units around KNOT.
-const KNOT_H = 92; // height
-const KNOT_TOP = 58; // half-width across the top
-const KNOT_BOTTOM = 37; // half-width at the bottom, just over the blade's (36)
+// Half-Windsor knot, kept slim: barely wider than the blade at the top and taller than it
+// is wide, tapering a little to the blade. In tie units around KNOT.
+const KNOT_H = 90; // height
+const KNOT_TOP = 44; // half-width across the top
+const KNOT_BOTTOM = 35; // half-width at the bottom, about the blade's (36)
 
 // The collar points and the back of the collar, traced in the 2000 px photo. They get
 // painted back over the knot from the photo itself, so the knot sits under the collar.
@@ -345,10 +346,10 @@ export function startTie(canvas: HTMLCanvasElement, photo: HTMLElement): () => v
     const h = KNOT_H, t = KNOT_TOP, b = KNOT_BOTTOM;
     c.beginPath();
     c.moveTo(-t, -h);
-    c.quadraticCurveTo(0, -h - 6, t, -h);
-    c.quadraticCurveTo(t - 4, -h * 0.42, b, -2);
-    c.quadraticCurveTo(0, 9, -b, -2);
-    c.quadraticCurveTo(-(t - 4), -h * 0.42, -t, -h);
+    c.quadraticCurveTo(0, -h - 5, t, -h);
+    c.quadraticCurveTo(t + 3, -h * 0.5, b, -2);
+    c.quadraticCurveTo(0, 8, -b, -2);
+    c.quadraticCurveTo(-(t + 3), -h * 0.5, -t, -h);
     c.closePath();
   }
 
@@ -536,7 +537,7 @@ export function startTie(canvas: HTMLCanvasElement, photo: HTMLElement): () => v
     const box: [number, number, number, number] = [-KNOT_TOP - 10, -KNOT_H - 12, KNOT_TOP * 2 + 20, KNOT_H + 24];
     if (knotFabric) {
       // The wrap crosses the blade, so the knot's stripes run at a different angle.
-      knotFabric.setTransform(new DOMMatrix().translate(-48, -90).rotate(-58).scale(1 / TEX_SCALE));
+      knotFabric.setTransform(new DOMMatrix().translate(-40, -88).rotate(-58).scale(1 / TEX_SCALE));
       ctx.fillStyle = knotFabric;
       ctx.fillRect(...box);
     }
@@ -577,10 +578,15 @@ export function startTie(canvas: HTMLCanvasElement, photo: HTMLElement): () => v
     // 5. The collar, painted back over the knot from the photo, with a soft shadow on it.
     // Both happen only inside the knot, so the patch's edges are the knot's own outline.
     if (photoImg && photoImg.complete && photoImg.naturalWidth) {
-      const inKnot = () => {
-        ctx.translate(KNOT.x, KNOT.y);
+      // The knot's outline, optionally grown about its middle (grow = 1.5 also takes in the
+      // knot's rim and the shadow it casts, so none of it shows through the collar).
+      const inKnot = (grow = 1) => {
+        const m = ctx.getTransform();
+        ctx.translate(KNOT.x, KNOT.y - KNOT_H / 2);
+        ctx.scale(grow, grow);
+        ctx.translate(0, KNOT_H / 2);
         knotPath(ctx);
-        ctx.translate(-KNOT.x, -KNOT.y);
+        ctx.setTransform(m);
         ctx.clip();
       };
       ctx.save();
@@ -593,7 +599,7 @@ export function startTie(canvas: HTMLCanvasElement, photo: HTMLElement): () => v
       ctx.fill();
       ctx.restore();
       ctx.save();
-      inKnot();
+      inKnot(1.5);
       collarPath(ctx);
       ctx.clip();
       ctx.drawImage(photoImg, 0, 0, IMG_W, IMG_H);

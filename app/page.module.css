@@ -963,9 +963,23 @@
 }
 
 /* ---------- footer ---------- */
+/* A deep cocoa band, stitched on under the green contact section. */
 .footer {
-  background: var(--moss-dark);
-  color: #cfd2b4;
+  position: relative;
+  background: #241a14 var(--fuzz);
+  background-size: 200px 200px;
+  color: #eadfcd;
+  box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.35);
+}
+
+.footer::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 7px;
+  border-top: 1.5px dashed rgba(234, 223, 205, 0.3);
+  pointer-events: none;
 }
 
 .footInner {
