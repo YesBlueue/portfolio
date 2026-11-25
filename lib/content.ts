@@ -45,8 +45,13 @@ export const site = {
     resume: "/Thaw_Thaw_Tun_CV.pdf" as string | undefined,
   },
   about: {
-    // TODO: add the About photo, e.g. { src: "/about.webp", alt: "...", width: 1200, height: 1500 }.
-    photo: undefined as { src: string; alt: string; width: number; height: number } | undefined,
+    photo: {
+      src: "/about.webp",
+      alt: "Thaw Thaw Tun speaking into a microphone on stage at UIT, beside a lectern and a row of UIT flags.",
+      width: 780,
+      height: 1170,
+      caption: "UIT Impromptu Talk Competition 2026",
+    } as { src: string; alt: string; width: number; height: number; caption?: string } | undefined,
     lead: "I lead team projects from design to deployment, and I run a 180+ member study community that teaches programming, computer science and math.",
     body: "I study Computer Science at the University of Information Technology, Yangon (GPA 3.98, Outstanding Student). Besides full-stack web work, I've built hardware accessibility prototypes, and in 2026 I spent five months as an IT intern at Grand Royal Group International. Right now I'm learning machine learning, AI engineering and Java.",
   },

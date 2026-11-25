@@ -255,6 +255,7 @@ export default function Home() {
                     ) : (
                       <span className={styles.snapBlank}>Photo coming soon</span>
                     )}
+                    {site.about.photo?.caption && <figcaption>{site.about.photo.caption}</figcaption>}
                   </figure>
                   <div className={styles.swatch} aria-hidden="true">
                     <div data-fabric="flannel" />
