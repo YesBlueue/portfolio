@@ -53,26 +53,27 @@ export const site = {
       caption: "UIT Impromptu Talk Competition 2026",
     } as { src: string; alt: string; width: number; height: number; caption?: string } | undefined,
     lead: "I lead team projects from design to deployment, and I run a 180+ member study community that teaches programming, computer science and math.",
-    body: "I study Computer Science at the University of Information Technology, Yangon (GPA 3.98, Outstanding Student). Besides full-stack web work, I've built hardware accessibility prototypes, and in 2026 I spent five months as an IT intern at Grand Royal Group International. Right now I'm learning machine learning, AI engineering and Java.",
+    body: "I'm a third-year Computer Science student at the University of Information Technology, Yangon, with an outstanding GPA of 3.99. Besides full-stack web work, I've made games in Godot, and since June 2026 I've been an IT intern at Grand Royal Group International, through to December. Now I'm expanding my learning towards machine learning and AI engineering.",
   },
   experience: [
     {
       title: "IT Intern, Grand Royal Group International",
-      meta: "Jun – Oct 2026",
+      meta: "Jun 2026 – present",
       note: "Built a full-stack application with senior developers and evaluated computer vision models.",
     },
     {
       title: "Founder & Peer Tutor, Learnabyte",
-      meta: "Telegram study group",
+      meta: "Jul 2026 – present · Telegram study group",
       note: "Runs a 180+ member community of UIT students and makes lecture-style videos on programming, CS and math.",
     },
   ] satisfies Entry[],
   awards: [
-    { title: "3rd Place, UIT Innovative Hackathon", meta: "UIT · 2026" },
+    // Ordinals like "3rd" are shown with a superscript suffix (components/Ordinals.tsx).
+    { title: "3rd Place, UIT Innovative Hackathon", meta: "University of Information Technology · 2026" },
     { title: "National Finalist, ASEAN Digital Awards", meta: "Myanmar Computer Federation · 2025" },
-    { title: "Prize for 2nd Highest Marks, Batch 12", meta: "UIT · First Year" },
-    { title: "Champion, Impromptu Talk Competition", meta: "UIT · 2026" },
-    { title: "Semi-finalist, ASEAN-China-India Youth Leadership Summit", meta: "OSG Youth Alliance · 2024" },
+    { title: "Prize for 2nd Highest Marks, Batch 12", meta: "University of Information Technology · First Year" },
+    { title: "Champion, Impromptu Talk Competition", meta: "University of Information Technology · 2026" },
+    { title: "National Finalist, ASEAN-China-India Youth Leadership Summit", meta: "OSG Youth Alliance · 2024" },
   ] satisfies Entry[],
   skills: [
     { label: "Languages", items: ["JavaScript", "Python", "SQL", "GDScript", "HTML/CSS"] },
@@ -86,17 +87,21 @@ export const site = {
   ],
 };
 
-// The journey timeline, oldest first.
-// TODO: confirm the dates (the ones here are placeholders) and add photos.
+// The journey timeline, oldest first. TODO: photos for the stops that don't have one yet.
 export const journey: Milestone[] = [
-  { when: "2023", title: "Started Computer Science at UIT", note: "University of Information Technology, Yangon." },
-  { when: "Early 2024", title: "Prize for 2nd highest marks", note: "Batch 12, first year at UIT." },
-  { when: "2024", title: "Built MaMa WaWa", note: "My first team project: a learning platform for kids." },
-  { when: "2024", title: "Founded Learnabyte", note: "A study community that's grown past 180 members." },
-  { when: "2024", title: "Youth Leadership Summit semi-finalist", note: "ASEAN-China-India, OSG Youth Alliance." },
-  { when: "2025", title: "ASEAN Digital Awards national finalist", note: "Myanmar Computer Federation." },
-  { when: "Early 2026", title: "3rd place, UIT Innovative Hackathon", note: "And champion of the impromptu talk contest." },
-  { when: "Jun – Oct 2026", title: "IT intern, Grand Royal Group", note: "Full-stack work and computer vision models." },
+  { when: "Jun 2024", title: "Six distinctions in the matriculation exam", note: "Grade 12, the national university entrance exam.", image: { src: "/journey/six-distinctions.webp", alt: "Thaw Thaw Tun with dozens of other top students, each holding an award, at a ceremony for outstanding matriculation results.", width: 800, height: 600 } },
+  { when: "Jun 2024", title: "Youth Leadership Summit national finalist", note: "ASEAN-China-India, OSG Youth Alliance.", image: { src: "/journey/aciyls.webp", alt: "Thaw Thaw Tun holding a microphone on stage with four teammates at the ASEAN-China-India Youth Leadership Summit 2024.", width: 800, height: 600 } },
+  { when: "Nov 2024", title: "Started Computer Science at UIT", note: "University of Information Technology, Yangon.", image: { src: "/journey/uit-first-day.webp", alt: "The UIT campus atrium under its steel-and-glass roof, with students walking past.", width: 800, height: 600 } },
+  { when: "Jul 2025", title: "Built MaMa WaWa", note: "My first team project: a learning platform for kids.", image: { src: "/journey/mama-wawa.webp", alt: "Thaw Thaw Tun presenting MaMa WaWa from a laptop, with its home page projected on the screen.", width: 800, height: 600 } },
+  { when: "Oct 2025", title: "ASEAN Digital Awards national finalist", note: "Myanmar Computer Federation.", image: { src: "/journey/asean-digital-awards.webp", alt: "The Myanmar Computer Federation letter announcing the teams selected for the ASEAN Digital Awards 2026.", width: 800, height: 600 } },
+  { when: "Jun 2026", title: "IT intern, Grand Royal Group", note: "Full-stack work and computer vision models, through December.", image: { src: "/journey/grgi.webp", alt: "The Grand Royal Group reception, with its logo above a curved wooden desk.", width: 800, height: 600 } },
+  { when: "Jul 2026", title: "Let's Tech Hackathon", note: "My first hackathon. No win this time, but a first step.", image: { src: "/journey/lets-tech.webp", alt: "Thaw Thaw Tun taking a selfie in a lift with hackathon teammates.", width: 800, height: 600 } },
+  { when: "Jul 2026", title: "3rd place, UIT Innovative Hackathon", note: "My second hackathon, the same month.", image: { src: "/journey/uit-hackathon.webp", alt: "Thaw Thaw Tun and teammates in front of the UIT Innovative Hackathon 2026 banner, holding their prize sign.", width: 800, height: 600 } },
+  { when: "Jul 2026", title: "Started Learnabyte", note: "A study community that's grown past 180 members." },
+  { when: "Aug 2026", title: "Champion, Impromptu Talk Competition", note: "Public speaking on stage at UIT.", image: { src: "/journey/impromptu.webp", alt: "Thaw Thaw Tun holding a first prize certificate with other contestants at the UIT Impromptu Talk Competition.", width: 800, height: 600 } },
+  { when: "Sep 2026", title: "Prize for 2nd highest marks", note: "Batch 12, first year at UIT.", image: { src: "/journey/second-highest-marks.webp", alt: "Thaw Thaw Tun receiving a trophy on stage at a UIT prize-giving ceremony.", width: 800, height: 600 } },
+  { when: "Nov 2026", title: "NASA Space Apps Challenge", note: "NASA's global hackathon for space and science." },
+  { when: "Dec 2026", title: "Project show", note: "Coming soon.", image: { src: "/journey/project-show.webp", alt: "Stairs and walkways inside the UIT building.", width: 800, height: 600 }, next: true },
   { when: "Next", title: "Machine learning & AI", note: "Where the thread goes next.", next: true },
 ];
 
@@ -107,9 +112,9 @@ export const projects: Project[] = [
     kind: "Web",
     pitch: "A campus platform for UIT with a 3D map, timetables and bookings.",
     description:
-      "An interactive 3D campus map with room search and shortest-path routing, plus timetables, room bookings, clubs, events and messaging. I lead the team and work on the Next.js frontend and Spring Boot API.",
+      "An interactive 3D campus map with room search and shortest-path routing, plus timetables, room bookings, clubs, events and messaging. I led the team and worked on the Next.js frontend and Spring Boot API.",
     role: "Team lead · Full-stack developer",
-    stack: ["Next.js", "shadcn/ui", "Spring Boot", "Supabase", "Three.js"],
+    stack: ["Next.js", "Spring Boot", "Supabase", "Three.js"],
     // Public backend repo. The frontend repo (YesBlueue/uit_virtual_campus_frontend) is private.
     source: "https://github.com/KaungSet178/UIT_Virtual_Campus",
     image: {
@@ -144,7 +149,7 @@ export const projects: Project[] = [
     description:
       "An assistive prototype for deaf and mute users that speaks gestures and finger-spelled words aloud, and shows live captions on the wrist. I prototyped the hardware and software, including our own 5-bit finger alphabet.",
     role: "Hardware & software prototyping",
-    stack: ["Arduino", "Raspberry Pi", "Python", "eSpeak", "Electronics"],
+    stack: ["Arduino", "Raspberry Pi", "Python", "Electronics"],
     image: {
       src: "/projects/assistive-gloves.png",
       alt: "Smart Communication Gloves poster: the title and feature tags beside a close-up photo of a black glove wired with finger sensors, and a code card mapping the gesture 11001 to the letter V.",
@@ -177,7 +182,8 @@ export const projects: Project[] = [
     pitch: "A student-support app with tutors, hostels, food and transport in one place.",
     description:
       "A mobile app for Myanmar university students that brings tutoring, housing, meals and campus transport together, with SmartMatch AI to search them. Ask it one question and it suggests school-approved options for you.",
-    // TODO: role and stack still to come.
+    role: "Full-stack developer",
+    // TODO: stack still to come.
     demo: "https://sat-thwal.vercel.app",
     // Hosted on a teammate's account; Thaw Thaw Tun is a collaborator.
     source: "https://github.com/theYE-8266-viren-Nai/sat-thwal",

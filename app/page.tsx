@@ -3,6 +3,7 @@ import type { CSSProperties } from "react";
 import { CardFit } from "@/components/CardFit";
 import { CopyEmail } from "@/components/CopyEmail";
 import { Intro } from "@/components/Intro";
+import { Ordinals } from "@/components/Ordinals";
 import { Journey } from "@/components/Journey";
 import { Portrait } from "@/components/Portrait";
 import { ReKnit } from "@/components/ReKnit";
@@ -233,7 +234,9 @@ export default function Home() {
                 <ul className={styles.list}>
                   {site.awards.map((a) => (
                     <li key={a.title}>
-                      <b>{a.title}</b>
+                      <b>
+                        <Ordinals text={a.title} />
+                      </b>
                       <span>{a.meta}</span>
                     </li>
                   ))}

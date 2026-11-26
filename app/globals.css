@@ -77,6 +77,14 @@ a {
   color: inherit;
 }
 
+/* Ordinal suffixes ("3rd"), without pushing the line apart. */
+sup {
+  font-size: 0.62em;
+  line-height: 0;
+  vertical-align: 0.6em;
+  margin-left: 0.04em;
+}
+
 a:focus-visible,
 button:focus-visible {
   outline: 3px solid var(--mustard);

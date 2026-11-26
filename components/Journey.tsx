@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, type ReactNode } from "react";
 import type { Milestone } from "@/lib/content";
+import { Ordinals } from "./Ordinals";
 import styles from "./Journey.module.css";
 
 const GAP = 30; // how far apart the two cloths hang before they're sewn
@@ -203,7 +204,9 @@ export function Journey({ milestones, head }: { milestones: Milestone[]; head: R
                 </figure>
                 <div className={styles.text}>
                   <p className={styles.when}>{m.when}</p>
-                  <h3 className={styles.title}>{m.title}</h3>
+                  <h3 className={styles.title}>
+                    <Ordinals text={m.title} />
+                  </h3>
                   <p className={styles.note}>{m.note}</p>
                 </div>
               </article>
