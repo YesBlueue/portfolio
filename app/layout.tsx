@@ -23,9 +23,26 @@ const hand = Caveat({
   variable: "--font-hand",
 });
 
+const description = `${site.name}: computer science student at UIT, Yangon, building full-stack web apps and games, and heading into machine learning and AI engineering.`;
+
+// The share image and icons come from files in app/ (opengraph-image.jpg, twitter-image.jpg,
+// icon.svg, apple-icon.png, favicon.ico); Next.js adds their tags.
 export const metadata: Metadata = {
+  metadataBase: new URL(site.url),
   title: `${site.name} · Portfolio`,
-  description: `${site.name}: computer science student at UIT, Yangon, building full-stack web apps, hardware prototypes and games.`,
+  description,
+  openGraph: {
+    type: "website",
+    url: "/",
+    siteName: site.name,
+    title: `${site.name} · Portfolio`,
+    description,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${site.name} · Portfolio`,
+    description,
+  },
 };
 
 export const viewport: Viewport = {

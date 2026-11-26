@@ -37,6 +37,7 @@ export const site = {
     "I build full-stack web apps, hardware prototypes and games, and I'm heading into machine learning and AI engineering.",
   // Stand-in portrait until the final photo is taken (ideally without the tie; see lib/tie.ts).
   portrait: { src: "/portrait.webp", caption: "Yangon, 2026" },
+  url: "https://thaw-thaw-tun.vercel.app",
   email: "thawtunthaw252@gmail.com",
   links: {
     github: "https://github.com/YesBlueue",
