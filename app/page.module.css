@@ -3,6 +3,7 @@
   position: sticky;
   top: 0;
   z-index: 40;
+  overflow-x: clip; /* the stitching runs past the edges so it can slide */
   /* A faint lengthwise grain, so it reads as a strap rather than a flat bar. */
   background:
     repeating-linear-gradient(0deg, rgba(51, 36, 28, 0.025) 0 1px, transparent 1px 3px),
@@ -18,8 +19,9 @@
 .nav::after {
   content: "";
   position: absolute;
-  left: 0;
-  right: 0;
+  /* A little longer than the belt, so it can slide when the belt is pulled. */
+  left: -24px;
+  right: -24px;
   border-top: 1.5px dashed rgba(155, 74, 46, 0.55);
   pointer-events: none;
 }
@@ -57,9 +59,40 @@
   transition: transform 0.35s cubic-bezier(0.3, 1.6, 0.5, 1);
 }
 
-/* Hover: the belt cinches a notch. */
+/* Hover: the belt is pulled a notch through the buckle. Its stitching, holes and links
+   all slide with it, and a glint runs across the metal. */
+.nav::before,
+.nav::after,
+.navInner ul {
+  transition: transform 0.5s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+.nav:has(.mark:hover)::before,
+.nav:has(.mark:hover)::after,
+.nav:has(.mark:hover) .navInner ul {
+  transform: translateX(-10px);
+}
 .mark:hover .buckle {
-  transform: translateX(-3px);
+  transform: translateX(2px);
+}
+.buckle [data-glint] {
+  opacity: 0;
+}
+.mark:hover .buckle [data-glint],
+.mark:focus-visible .buckle [data-glint] {
+  animation: glint 1s ease-out;
+}
+@keyframes glint {
+  0% {
+    opacity: 0;
+    transform: skewX(-20deg) translateX(0);
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: skewX(-20deg) translateX(100px);
+  }
 }
 
 .navInner ul {
@@ -108,11 +141,21 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .buckle {
+  .buckle,
+  .nav::before,
+  .nav::after,
+  .navInner ul {
     transition: none;
   }
-  .mark:hover .buckle {
+  .mark:hover .buckle,
+  .nav:has(.mark:hover)::before,
+  .nav:has(.mark:hover)::after,
+  .nav:has(.mark:hover) .navInner ul {
     transform: none;
+  }
+  .mark:hover .buckle [data-glint],
+  .mark:focus-visible .buckle [data-glint] {
+    animation: none;
   }
 }
 

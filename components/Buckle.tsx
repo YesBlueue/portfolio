@@ -32,6 +32,17 @@ export function Buckle({ className }: { className?: string }) {
           <stop offset=".55" stopColor="#bdb9b0" />
           <stop offset="1" stopColor="#8f8b82" />
         </linearGradient>
+        <linearGradient id="bk-glint" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor="#fff" stopOpacity="0" />
+          <stop offset=".5" stopColor="#fff" stopOpacity=".9" />
+          <stop offset="1" stopColor="#fff" stopOpacity="0" />
+        </linearGradient>
+        {/* The metal parts only, so the glint never lights up the belt. */}
+        <mask id="bk-metal">
+          <path d={frame} fill="none" stroke="#fff" strokeWidth="5.6" strokeLinecap="round" strokeLinejoin="round" />
+          <rect x="7.5" y="24" width="10" height="6" rx="3" fill="#fff" />
+          <rect x="62" y="0.6" width="9" height={BUCKLE_H - 1.2} rx="2" fill="#fff" />
+        </mask>
       </defs>
 
       {/* Frame: the bar, a soft dark edge under it, and a thin sheen along its top face. */}
@@ -51,6 +62,11 @@ export function Buckle({ className }: { className?: string }) {
       {/* The keeper: a metal bar wrapped around the belt. */}
       <rect x="62" y="0.6" width="9" height={BUCKLE_H - 1.2} rx="2" fill="url(#bk-side)" stroke="rgba(60,50,40,.35)" strokeWidth=".6" />
       <rect x="63.2" y="1.6" width="1.2" height={BUCKLE_H - 3.2} rx=".6" fill="rgba(255,255,255,.45)" />
+
+      {/* A glint, swept across the metal on hover (see .mark in page.module.css). */}
+      <g mask="url(#bk-metal)">
+        <rect data-glint="" x="-14" y="-6" width="14" height={BUCKLE_H + 12} fill="url(#bk-glint)" />
+      </g>
     </svg>
   );
 }
