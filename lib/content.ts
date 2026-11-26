@@ -184,7 +184,7 @@ export const projects: Project[] = [
     description:
       "A mobile app for Myanmar university students that brings tutoring, housing, meals and campus transport together, with SmartMatch AI to search them. Ask it one question and it suggests school-approved options for you.",
     role: "Full-stack developer",
-    // TODO: stack still to come.
+    stack: ["Next.js", "Supabase", "Vapi"],
     demo: "https://sat-thwal.vercel.app",
     // Hosted on a teammate's account; Thaw Thaw Tun is a collaborator.
     source: "https://github.com/theYE-8266-viren-Nai/sat-thwal",

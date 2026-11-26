@@ -1,8 +1,10 @@
 import Image from "next/image";
 import type { CSSProperties } from "react";
+import { Buckle } from "@/components/Buckle";
 import { CardFit } from "@/components/CardFit";
 import { CopyEmail } from "@/components/CopyEmail";
 import { Intro } from "@/components/Intro";
+import { NavSpy } from "@/components/NavSpy";
 import { Ordinals } from "@/components/Ordinals";
 import { Journey } from "@/components/Journey";
 import { Portrait } from "@/components/Portrait";
@@ -61,38 +63,29 @@ export default function Home() {
       <Intro />
       <Zipper />
       <Spool />
-      <nav className={styles.nav} aria-label="Main">
+      {/* The nav is a belt; its buckle is the logo and takes you back to the top. */}
+      <nav className={styles.nav} aria-label="Main" data-nav="">
         <div className={`inner ${styles.navInner}`}>
           <a className={styles.mark} href="#top" aria-label={`${site.name}, back to top`}>
-            {site.initials}
+            <Buckle className={styles.buckle} />
           </a>
           <ul>
-            <li>
-              <a href="#projects">
-                <span className={styles.dot} style={{ background: "var(--rust)" }} />
-                Projects
-              </a>
-            </li>
-            <li>
-              <a href="#about">
-                <span className={styles.dot} style={{ background: "var(--mustard)" }} />
-                About
-              </a>
-            </li>
-            <li>
-              <a href="#journey">
-                <span className={styles.dot} style={{ background: "var(--camel)" }} />
-                Journey
-              </a>
-            </li>
-            <li>
-              <a href="#contact">
-                <span className={styles.dot} style={{ background: "var(--moss)" }} />
-                Contact
-              </a>
-            </li>
+            {[
+              ["projects", "Projects"],
+              ["about", "About"],
+              ["journey", "Journey"],
+              ["contact", "Contact"],
+            ].map(([id, label]) => (
+              <li key={id}>
+                <a href={`#${id}`}>
+                  <span className={styles.hole} aria-hidden="true" />
+                  {label}
+                </a>
+              </li>
+            ))}
           </ul>
         </div>
+        <NavSpy nav="[data-nav]" />
       </nav>
 
       <main>
