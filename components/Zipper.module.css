@@ -43,7 +43,7 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   white-space: nowrap;
-  cursor: pointer;
+  cursor: var(--cur-pointer);
   outline: 1px dashed rgba(51, 36, 28, 0.35);
   outline-offset: -3px;
   box-shadow: 0 4px 10px -4px rgba(20, 8, 4, 0.6);

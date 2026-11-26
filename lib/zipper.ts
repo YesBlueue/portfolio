@@ -358,8 +358,10 @@ export function startZipper(root: HTMLElement, canvas: HTMLCanvasElement, tags: 
   };
   const onMove = (e: PointerEvent) => {
     const y = local(e);
-    if (drag) scrollToY(y - grabDy, false);
-    else canvas.style.cursor = onSlider(y) ? "grab" : "pointer";
+    if (drag) {
+      scrollToY(y - grabDy, false);
+      canvas.style.cursor = "var(--cur-grabbing)";
+    } else canvas.style.cursor = onSlider(y) ? "var(--cur-grab)" : "var(--cur-pointer)";
   };
   const onUp = () => {
     drag = false;

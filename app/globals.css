@@ -20,7 +20,40 @@
   /* Fine wool fuzz, layered over the fabric patterns below. */
   --fuzz: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 
+  /* Cursors: the system set redrawn in oat and cocoa (scripts/make-cursors.mjs). Plain
+     PNGs first; sharper 2x versions where the browser supports image-set for cursors. */
+  --cur-default: url("/cursors/arrow.png") 4 3, auto;
+  --cur-pointer: url("/cursors/pointer.png") 11 3, pointer;
+  --cur-text: url("/cursors/text.png") 16 16, text;
+  --cur-grab: url("/cursors/grab.png") 16 16, grab;
+  --cur-grabbing: url("/cursors/grabbing.png") 16 16, grabbing;
+
   color-scheme: light;
+}
+
+@supports (cursor: image-set(url("/cursors/arrow.png") 1x) 4 3, auto) {
+  :root {
+    --cur-default: image-set(url("/cursors/arrow.png") 1x, url("/cursors/arrow@2x.png") 2x) 4 3, auto;
+    --cur-pointer: image-set(url("/cursors/pointer.png") 1x, url("/cursors/pointer@2x.png") 2x) 11 3, pointer;
+    --cur-text: image-set(url("/cursors/text.png") 1x, url("/cursors/text@2x.png") 2x) 16 16, text;
+    --cur-grab: image-set(url("/cursors/grab.png") 1x, url("/cursors/grab@2x.png") 2x) 16 16, grab;
+    --cur-grabbing: image-set(url("/cursors/grabbing.png") 1x, url("/cursors/grabbing@2x.png") 2x) 16 16, grabbing;
+  }
+}
+
+html {
+  cursor: var(--cur-default);
+}
+
+/* Text you can select. */
+:where(p, h1, h2, h3, h4, li, dt, dd, figcaption, blockquote, address, time) {
+  cursor: var(--cur-text);
+}
+
+/* Anything you can click, including text inside it. */
+:where(a[href], button, [role="button"], summary, select, label[for]),
+:where(a[href], button, [role="button"], summary, select, label[for]) * {
+  cursor: var(--cur-pointer);
 }
 
 * {
@@ -146,12 +179,12 @@ html:not([data-intro="done"]) {
 /* Cursor feedback for the tie in the hero. */
 body.near-tie,
 body.near-tie * {
-  cursor: grab !important;
+  cursor: var(--cur-grab) !important;
 }
 
 body.dragging-tie,
 body.dragging-tie * {
-  cursor: grabbing !important;
+  cursor: var(--cur-grabbing) !important;
   user-select: none;
 }
 

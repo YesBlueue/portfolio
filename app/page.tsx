@@ -250,7 +250,7 @@ export default function Home() {
                         alt={site.about.photo.alt}
                         width={site.about.photo.width}
                         height={site.about.photo.height}
-                        sizes="(max-width: 860px) 70vw, 300px"
+                        sizes="(max-width: 860px) 70vw, 340px"
                       />
                     ) : (
                       <span className={styles.snapBlank}>Photo coming soon</span>

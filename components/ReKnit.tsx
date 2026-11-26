@@ -11,7 +11,7 @@ export function ReKnit() {
         } catch {}
         window.location.assign(window.location.pathname);
       }}
-      style={{ all: "unset", cursor: "pointer", textDecoration: "underline", textUnderlineOffset: 3 }}
+      style={{ all: "unset", cursor: "var(--cur-pointer)", textDecoration: "underline", textUnderlineOffset: 3 }}
     >
       Knit it back up
     </button>

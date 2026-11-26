@@ -545,7 +545,7 @@ export function startKnit(canvas: HTMLCanvasElement, hooks: KnitHooks): Knit {
     grab = best;
     target.x = e.clientX;
     target.y = e.clientY;
-    canvas.style.cursor = "grabbing";
+    canvas.style.cursor = "var(--cur-grabbing)";
     hooks.onGrab();
   }
 
@@ -558,7 +558,7 @@ export function startKnit(canvas: HTMLCanvasElement, hooks: KnitHooks): Knit {
     if (auto || done || e.pointerType === "touch") return;
     let near = false;
     for (let i = 1; i <= N && !near; i++) near = (P[i].x - e.clientX) ** 2 + (P[i].y - e.clientY) ** 2 < 1600;
-    canvas.style.cursor = near ? "grab" : "";
+    canvas.style.cursor = near ? "var(--cur-grab)" : "";
   }
 
   function onUp() {

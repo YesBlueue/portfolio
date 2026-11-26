@@ -24,7 +24,7 @@
 
 .copy {
   border: 0;
-  cursor: pointer;
+  cursor: var(--cur-pointer);
   padding: 9px 16px;
   border-radius: 999px;
   background: var(--mustard);

@@ -790,10 +790,11 @@
   flex: 1 0 auto;
   display: flex;
   flex-direction: column;
-  width: min(300px, 88%);
-  /* Tucked into the pocket only a little, so the caption strip stays above it. */
-  margin: 0 auto 58px;
-  padding: 10px 10px 22px;
+  width: min(340px, 92%);
+  /* The print runs well down into the pocket, so its bottom edge stays hidden even when
+     it lifts on hover; the extra white below the caption sits behind the flannel. */
+  margin: 0 auto 22px;
+  padding: 10px 10px 58px;
   background: #fffaf1;
   border-radius: 4px;
   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.06), 0 18px 30px -16px rgba(10, 14, 4, 0.7);
