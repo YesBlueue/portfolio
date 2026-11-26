@@ -5,8 +5,9 @@
 // Coordinates are in "tie units": the photo is treated as IMG_W x IMG_H. The real photo is
 // 2000 x 2000; at 1.66 photo pixels per unit (measured from the glasses, which span 605 px
 // in this photo and 365 in the old one) the tie keeps its size relative to the person.
-// The tie layer extends PAD_X units to each side and down to LAYER_H times the photo
-// height, so the tie can hang out of the frame.
+// The tie is drawn on its own canvas covering the whole window, above everything else on
+// the page, so it can be pulled anywhere without being cut off. Each frame the canvas is
+// lined up with the photo (including the print's tilt).
 //
 // Look: matched to the tie in the portrait. A heathered chocolate-brown weave with thin
 // double stripes (a pale pinkish-cream line and a dimmer twin) running diagonally from
@@ -19,8 +20,6 @@
 
 export const IMG_W = 1205;
 export const IMG_H = 1205;
-export const PAD_X = 400;
-export const LAYER_H = 1.6;
 
 const COVER_PRINTED_TIE = false;
 // Bottom of the knot, where the blade hangs from. The knot's top sits on the collar band
@@ -171,10 +170,56 @@ function texTri(ctx: CanvasRenderingContext2D, tex: HTMLCanvasElement, src: [P2,
   ctx.restore();
 }
 
-/** Starts the tie on `canvas`, positioned relative to `photo`. Returns a cleanup function. */
-export function startTie(canvas: HTMLCanvasElement, photo: HTMLElement): () => void {
+/** Layer for the tie: over the nav, zipper and spool, under the knitted intro. */
+const LAYER_Z = 80;
+
+/** Maps tie units to viewport pixels for `photo`, including any transform on its print. */
+function photoMatrix(photo: HTMLElement): DOMMatrix {
+  // The print (the nearest ancestor with a transform) is tilted about its centre.
+  let print: HTMLElement | null = photo.parentElement;
+  while (print && getComputedStyle(print).transform === "none") print = print.parentElement;
+  const k = photo.offsetWidth / IMG_W;
+  if (!print) {
+    const r = photo.getBoundingClientRect();
+    return new DOMMatrix().translateSelf(r.left, r.top).scaleSelf(k);
+  }
+  // The photo's place inside the print, before the tilt.
+  let ox = 0, oy = 0;
+  let el: HTMLElement | null = photo;
+  while (el && el !== print) {
+    ox += el.offsetLeft;
+    oy += el.offsetTop;
+    el = el.offsetParent as HTMLElement | null;
+  }
+  const t = new DOMMatrix(getComputedStyle(print).transform);
+  const box = print.getBoundingClientRect();
+  return new DOMMatrix()
+    .translateSelf(box.left + box.width / 2, box.top + box.height / 2)
+    .multiplySelf(new DOMMatrix([t.a, t.b, t.c, t.d, 0, 0]))
+    .translateSelf(-print.offsetWidth / 2 + ox, -print.offsetHeight / 2 + oy)
+    .scaleSelf(k);
+}
+
+/** Starts the tie for `photo`, on a canvas of its own over the page. Returns a cleanup function. */
+export function startTie(photo: HTMLElement): () => void {
+  const canvas = document.createElement("canvas");
+  canvas.setAttribute("aria-hidden", "true");
+  Object.assign(canvas.style, {
+    position: "fixed",
+    inset: "0",
+    width: "100vw",
+    height: "100vh",
+    pointerEvents: "none",
+    zIndex: String(LAYER_Z),
+    // The same grade as the photo (Portrait.module.css), so the collar repaint matches.
+    filter: "sepia(0.1) saturate(1.05) contrast(1.03)",
+  });
+  document.body.appendChild(canvas);
   const ctx = canvas.getContext("2d");
-  if (!ctx) return () => {};
+  if (!ctx) {
+    canvas.remove();
+    return () => {};
+  }
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const tex = makeFabric();
   const knotFabric = ctx.createPattern(tex, "repeat");
@@ -185,13 +230,16 @@ export function startTie(canvas: HTMLCanvasElement, photo: HTMLElement): () => v
     py: KNOT.y + i * SEG,
   }));
 
-  let scale = 1;
+  let dpr = 1;
+  let M = photoMatrix(photo);
   const resize = () => {
-    const r = photo.getBoundingClientRect();
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
-    scale = (r.width / IMG_W) * dpr;
-    canvas.width = Math.round((IMG_W + PAD_X * 2) * scale);
-    canvas.height = Math.round(IMG_H * LAYER_H * scale);
+    dpr = Math.min(2, window.devicePixelRatio || 1);
+    canvas.width = Math.round(window.innerWidth * dpr);
+    canvas.height = Math.round(window.innerHeight * dpr);
+    if (reduce) draw();
+  };
+  // With reduced motion there's no animation loop, so redraw when the page moves.
+  const onScroll = () => {
     if (reduce) draw();
   };
 
@@ -200,8 +248,8 @@ export function startTie(canvas: HTMLCanvasElement, photo: HTMLElement): () => v
   let prev: Vec | null = null;
   let grab = -1;
   const toImg = (e: PointerEvent): Vec => {
-    const r = photo.getBoundingClientRect();
-    return { x: ((e.clientX - r.left) / r.width) * IMG_W, y: ((e.clientY - r.top) / r.height) * IMG_H };
+    const p = photoMatrix(photo).inverse().transformPoint(new DOMPoint(e.clientX, e.clientY));
+    return { x: p.x, y: p.y };
   };
   const nearest = (m: Vec) => {
     let best = -1;
@@ -369,7 +417,28 @@ export function startTie(canvas: HTMLCanvasElement, photo: HTMLElement): () => v
     if (!ctx) return;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.setTransform(scale, 0, 0, scale, PAD_X * scale, 0);
+    M = photoMatrix(photo);
+    // Nothing to draw while the photo is well off screen (unless the tie is in hand).
+    const top = M.f, h = window.innerHeight;
+    if (grab < 0 && (top > h + 400 || top + photo.offsetHeight < -1200)) return;
+    // At rest, keep the tie under the sticky nav like the photo it hangs from; while it's
+    // being pulled, it goes over everything.
+    ctx.save();
+    if (grab < 0) {
+      const nav = document.querySelector("nav")?.getBoundingClientRect();
+      if (nav && nav.bottom > 0) {
+        ctx.beginPath();
+        ctx.rect(0, nav.bottom * dpr, canvas.width, canvas.height);
+        ctx.clip();
+      }
+    }
+    ctx.setTransform(M.a * dpr, M.b * dpr, M.c * dpr, M.d * dpr, M.e * dpr, M.f * dpr);
+    drawTie();
+    ctx.restore();
+  }
+
+  function drawTie() {
+    if (!ctx) return;
 
     if (COVER_PRINTED_TIE) {
       // Paint shirt fabric over the tie printed in the photo (inside the frame only).
@@ -617,6 +686,7 @@ export function startTie(canvas: HTMLCanvasElement, photo: HTMLElement): () => v
 
   resize();
   window.addEventListener("resize", resize);
+  window.addEventListener("scroll", onScroll, { passive: true });
   window.addEventListener("pointermove", onMove);
   window.addEventListener("pointerdown", onDown);
   window.addEventListener("pointerup", release);
@@ -650,6 +720,8 @@ export function startTie(canvas: HTMLCanvasElement, photo: HTMLElement): () => v
   return () => {
     cancelAnimationFrame(raf);
     window.removeEventListener("resize", resize);
+    window.removeEventListener("scroll", onScroll);
+    canvas.remove();
     window.removeEventListener("pointermove", onMove);
     window.removeEventListener("pointerdown", onDown);
     window.removeEventListener("pointerup", release);

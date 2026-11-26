@@ -212,7 +212,7 @@ export default function Home() {
           <div className="inner">
             <div className={styles.secHead}>
               <h2 id="about-h">About</h2>
-              <span>The short version</span>
+              <span>The person behind the code</span>
             </div>
             <div className={styles.about}>
               <div className={styles.aboutText}>

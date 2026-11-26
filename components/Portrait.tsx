@@ -8,11 +8,11 @@ import styles from "./Portrait.module.css";
 /** The hero photo as a tilted print, with the interactive tie hanging out of the frame. */
 export function Portrait({ src, alt, caption, note }: { src: string; alt: string; caption: string; note?: string }) {
   const photoRef = useRef<HTMLDivElement>(null);
-  const tieRef = useRef<HTMLCanvasElement>(null);
 
+  // The tie draws on its own canvas over the whole page (see lib/tie.ts).
   useEffect(() => {
-    if (!photoRef.current || !tieRef.current) return;
-    return startTie(tieRef.current, photoRef.current);
+    if (!photoRef.current) return;
+    return startTie(photoRef.current);
   }, []);
 
   return (
@@ -21,7 +21,6 @@ export function Portrait({ src, alt, caption, note }: { src: string; alt: string
         <div ref={photoRef} className={styles.photo}>
           <Image src={src} alt={alt} width={IMG_W} height={IMG_H} priority sizes="(max-width: 860px) 90vw, 400px" />
         </div>
-        <canvas ref={tieRef} className={styles.tie} aria-hidden="true" />
       </div>
       <figcaption>{caption}</figcaption>
       {/* On phones the hint sits here, in the print's bottom-right corner. */}

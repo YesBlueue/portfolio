@@ -118,20 +118,10 @@
 
 .kicker {
   margin: 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
   font: 700 13px var(--f-body);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--rust);
-}
-
-.kicker::before {
-  content: "";
-  width: 26px;
-  height: 2px;
-  background: currentColor;
 }
 
 .name {

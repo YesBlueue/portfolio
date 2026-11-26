@@ -42,19 +42,6 @@
   mix-blend-mode: soft-light;
 }
 
-/* Bigger than the photo, so the tie can hang out past the frame.
-   Matches PAD_X (400 of 1205 units each side) and LAYER_H (1.6) in lib/tie.ts. */
-.tie {
-  position: absolute;
-  left: -33.195%;
-  top: 0;
-  width: 166.39%;
-  height: 160%;
-  pointer-events: none;
-  z-index: 3;
-  filter: sepia(0.1) saturate(1.05) contrast(1.03);
-}
-
 /* "psst, tug the tie": only on phones; on wider screens it sits by the buttons. */
 .note {
   display: none;

@@ -71,7 +71,7 @@ export const site = {
     // Ordinals like "3rd" are shown with a superscript suffix (components/Ordinals.tsx).
     { title: "3rd Place, UIT Innovative Hackathon", meta: "University of Information Technology · 2026" },
     { title: "National Finalist, ASEAN Digital Awards", meta: "Myanmar Computer Federation · 2025" },
-    { title: "Prize for 2nd Highest Marks, Batch 12", meta: "University of Information Technology · First Year" },
+    { title: "2nd Highest Scorer, Batch 12", meta: "University of Information Technology · First Year" },
     { title: "Champion, Impromptu Talk Competition", meta: "University of Information Technology · 2026" },
     { title: "National Finalist, ASEAN-China-India Youth Leadership Summit", meta: "OSG Youth Alliance · 2024" },
   ] satisfies Entry[],
@@ -89,19 +89,19 @@ export const site = {
 
 // The journey timeline, oldest first. TODO: photos for the stops that don't have one yet.
 export const journey: Milestone[] = [
-  { when: "Jun 2024", title: "Six distinctions in the matriculation exam", note: "Grade 12, the national university entrance exam.", image: { src: "/journey/six-distinctions.webp", alt: "Thaw Thaw Tun with dozens of other top students, each holding an award, at a ceremony for outstanding matriculation results.", width: 800, height: 600 } },
-  { when: "Jun 2024", title: "Youth Leadership Summit national finalist", note: "ASEAN-China-India, OSG Youth Alliance.", image: { src: "/journey/aciyls.webp", alt: "Thaw Thaw Tun holding a microphone on stage with four teammates at the ASEAN-China-India Youth Leadership Summit 2024.", width: 800, height: 600 } },
-  { when: "Nov 2024", title: "Started Computer Science at UIT", note: "University of Information Technology, Yangon.", image: { src: "/journey/uit-first-day.webp", alt: "The UIT campus atrium under its steel-and-glass roof, with students walking past.", width: 800, height: 600 } },
-  { when: "Jul 2025", title: "Built MaMa WaWa", note: "My first team project: a learning platform for kids.", image: { src: "/journey/mama-wawa.webp", alt: "Thaw Thaw Tun presenting MaMa WaWa from a laptop, with its home page projected on the screen.", width: 800, height: 600 } },
-  { when: "Oct 2025", title: "ASEAN Digital Awards national finalist", note: "Myanmar Computer Federation.", image: { src: "/journey/asean-digital-awards.webp", alt: "The Myanmar Computer Federation letter announcing the teams selected for the ASEAN Digital Awards 2026.", width: 800, height: 600 } },
+  { when: "Jun 2024", title: "Six-distinction student, Matriculation Exam", note: "Grade 12, the national university entrance exam.", image: { src: "/journey/six-distinctions.webp", alt: "Thaw Thaw Tun with dozens of other top students, each holding an award, at a ceremony for outstanding matriculation results.", width: 800, height: 600 } },
+  { when: "Jun 2024", title: "National finalist, ASEAN-China-India Youth Leadership Summit", note: "Organised by OSG Youth Alliance.", image: { src: "/journey/aciyls.webp", alt: "Thaw Thaw Tun holding a microphone on stage with four teammates at the ASEAN-China-India Youth Leadership Summit 2024.", width: 800, height: 600 } },
+  { when: "Nov 2024", title: "Computer Science student, UIT", note: "University of Information Technology, Yangon.", image: { src: "/journey/uit-first-day.webp", alt: "The UIT campus atrium under its steel-and-glass roof, with students walking past.", width: 800, height: 600 } },
+  { when: "Jul 2025", title: "Frontend developer, MaMa WaWa", note: "My first team project: a learning platform for kids.", image: { src: "/journey/mama-wawa.webp", alt: "Thaw Thaw Tun presenting MaMa WaWa from a laptop, with its home page projected on the screen.", width: 800, height: 600 } },
+  { when: "Oct 2025", title: "National finalist, ASEAN Digital Awards", note: "Myanmar Computer Federation.", image: { src: "/journey/asean-digital-awards.webp", alt: "The Myanmar Computer Federation letter announcing the teams selected for the ASEAN Digital Awards 2026.", width: 800, height: 600 } },
   { when: "Jun 2026", title: "IT intern, Grand Royal Group", note: "Full-stack work and computer vision models, through December.", image: { src: "/journey/grgi.webp", alt: "The Grand Royal Group reception, with its logo above a curved wooden desk.", width: 800, height: 600 } },
-  { when: "Jul 2026", title: "Let's Tech Hackathon", note: "My first hackathon. No win this time, but a first step.", image: { src: "/journey/lets-tech.webp", alt: "Thaw Thaw Tun taking a selfie in a lift with hackathon teammates.", width: 800, height: 600 } },
+  { when: "Jul 2026", title: "Participant, Let's Tech Hackathon", note: "My first hackathon. No win this time, but a first step.", image: { src: "/journey/lets-tech.webp", alt: "Thaw Thaw Tun taking a selfie in a lift with hackathon teammates.", width: 800, height: 600 } },
   { when: "Jul 2026", title: "3rd place, UIT Innovative Hackathon", note: "My second hackathon, the same month.", image: { src: "/journey/uit-hackathon.webp", alt: "Thaw Thaw Tun and teammates in front of the UIT Innovative Hackathon 2026 banner, holding their prize sign.", width: 800, height: 600 } },
-  { when: "Jul 2026", title: "Started Learnabyte", note: "A study community that's grown past 180 members." },
+  { when: "Jul 2026", title: "Founder and peer tutor, Learnabyte", note: "A study community that's grown past 180 members." },
   { when: "Aug 2026", title: "Champion, Impromptu Talk Competition", note: "Public speaking on stage at UIT.", image: { src: "/journey/impromptu.webp", alt: "Thaw Thaw Tun holding a first prize certificate with other contestants at the UIT Impromptu Talk Competition.", width: 800, height: 600 } },
-  { when: "Sep 2026", title: "Prize for 2nd highest marks", note: "Batch 12, first year at UIT.", image: { src: "/journey/second-highest-marks.webp", alt: "Thaw Thaw Tun receiving a trophy on stage at a UIT prize-giving ceremony.", width: 800, height: 600 } },
-  { when: "Nov 2026", title: "NASA Space Apps Challenge", note: "NASA's global hackathon for space and science." },
-  { when: "Dec 2026", title: "Project show", note: "Coming soon.", image: { src: "/journey/project-show.webp", alt: "Stairs and walkways inside the UIT building.", width: 800, height: 600 }, next: true },
+  { when: "Sep 2026", title: "2nd highest scorer, Batch 12", note: "Prize for the first-year exams at UIT.", image: { src: "/journey/second-highest-marks.webp", alt: "Thaw Thaw Tun receiving a trophy on stage at a UIT prize-giving ceremony.", width: 800, height: 600 } },
+  { when: "Nov 2026", title: "Participant, NASA Space Apps Challenge", note: "NASA's global hackathon for space and science." },
+  { when: "Dec 2026", title: "Presenter, Project Show", note: "Coming soon.", image: { src: "/journey/project-show.webp", alt: "Stairs and walkways inside the UIT building.", width: 800, height: 600 }, next: true },
   { when: "Next", title: "Machine learning & AI", note: "Where the thread goes next.", next: true },
 ];
 
@@ -115,6 +115,7 @@ export const projects: Project[] = [
       "An interactive 3D campus map with room search and shortest-path routing, plus timetables, room bookings, clubs, events and messaging. I led the team and worked on the Next.js frontend and Spring Boot API.",
     role: "Team lead · Full-stack developer",
     stack: ["Next.js", "Spring Boot", "Supabase", "Three.js"],
+    demo: "https://uit-virtual-campus.vercel.app",
     // Public backend repo. The frontend repo (YesBlueue/uit_virtual_campus_frontend) is private.
     source: "https://github.com/KaungSet178/UIT_Virtual_Campus",
     image: {
