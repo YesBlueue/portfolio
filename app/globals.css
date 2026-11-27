@@ -63,6 +63,11 @@ html {
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 64px;
+  /* Stop phone browsers from enlarging text on their own. iPhone Safari does it to blocks
+     it thinks are wide (the zoomed project cards look wide to it) and redoes it as the
+     toolbars move, which rewrapped card text mid-scroll and made the page jump. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
