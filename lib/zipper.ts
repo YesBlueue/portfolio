@@ -339,11 +339,11 @@ export function startZipper(root: HTMLElement, canvas: HTMLCanvasElement, tags: 
     raf = requestAnimationFrame(frame);
   };
   let still = 0;
+  // Wakes the loop. lastY still holds the position drawn when it went to sleep, so the
+  // first frame sees the whole scroll since then: the slider catches up and the tab swings.
   const run = () => {
-    if (!raf) {
-      lastY = window.scrollY;
-      raf = requestAnimationFrame(frame);
-    }
+    dirty = true;
+    if (!raf) raf = requestAnimationFrame(frame);
   };
 
   // ---------- input ----------
