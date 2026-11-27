@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { whenIdle } from "@/lib/idle";
 import { startZipper } from "@/lib/zipper";
 import styles from "./Zipper.module.css";
 
@@ -24,8 +25,11 @@ export function Zipper() {
       const el = tagRefs.current[i], target = document.getElementById(s.id);
       return el && target ? [{ el, target }] : [];
     });
-    root.dataset.on = "";
-    return startZipper(root, canvas, tags);
+    // Set up once the browser is idle after loading, so it doesn't slow the first paint.
+    return whenIdle(() => {
+      root.dataset.on = "";
+      return startZipper(root, canvas, tags);
+    });
   }, []);
 
   return (

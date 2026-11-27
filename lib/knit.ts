@@ -578,6 +578,7 @@ export function startKnit(canvas: HTMLCanvasElement, hooks: KnitHooks): Knit {
     resizeTimer = window.setTimeout(() => {
       build();
       draw();
+      still = false;
     }, 120);
   };
   window.addEventListener("resize", onResize);
@@ -589,7 +590,21 @@ export function startKnit(canvas: HTMLCanvasElement, hooks: KnitHooks): Knit {
   draw();
 
   let raf = 0, last = performance.now(), acc = 0;
+  // While the sweater just sits there (before the unravelling, with nobody holding the
+  // yarn) nothing changes, so it is drawn once and then left alone.
+  let still = false;
   const frame = (now: number) => {
+    if (!auto && grab < 0) {
+      if (!still) {
+        draw();
+        still = true;
+      }
+      last = now;
+      acc = 0;
+      raf = requestAnimationFrame(frame);
+      return;
+    }
+    still = false;
     acc = Math.min(acc + (now - last), 250);
     last = now;
     let n = 0;

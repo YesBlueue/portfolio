@@ -4,7 +4,5 @@ import { Fragment } from "react";
 export function Ordinals({ text }: { text: string }) {
   // split() with two groups gives [text, number, suffix, text, number, suffix, ..., text].
   const parts = text.split(/\b(\d+)(st|nd|rd|th)\b/);
-  return parts.map((part, i) =>
-    i % 3 === 2 ? <sup key={i}>{part}</sup> : <Fragment key={i}>{part}</Fragment>,
-  );
+  return <>{parts.map((part, i) => (i % 3 === 2 ? <sup key={i}>{part}</sup> : <Fragment key={i}>{part}</Fragment>))}</>;
 }

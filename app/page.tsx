@@ -145,7 +145,7 @@ export default function Home() {
                           alt={p.image.alt}
                           width={p.image.width}
                           height={p.image.height}
-                          sizes="(max-width: 860px) 90vw, 480px"
+                          sizes="(max-width: 860px) 90vw, (max-width: 1100px) 45vw, 340px"
                         />
                       ) : (
                         <span className={styles.blank}>{p.placeholder ? "On the loom" : "Photo coming soon"}</span>

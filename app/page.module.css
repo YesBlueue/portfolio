@@ -639,8 +639,10 @@
   transform: rotate(1.2deg);
 }
 
+/* The card's thread colour, deepened with cocoa so the small number stays readable
+   (at least 4.5:1 on the cream card, even for the mustard and camel threads). */
 .no {
-  color: var(--thread);
+  color: color-mix(in srgb, var(--thread) 45%, var(--cocoa));
 }
 
 .card h3 {

@@ -80,6 +80,7 @@ export function startZipper(root: HTMLElement, canvas: HTMLCanvasElement, tags: 
     makeCloth();
     placeTags();
     dirty = true;
+    run();
   }
 
   function placeTags() {
@@ -96,6 +97,7 @@ export function startZipper(root: HTMLElement, canvas: HTMLCanvasElement, tags: 
 
   let idle = 0;
   function wake() {
+    run();
     kTo = 1;
     root.dataset.awake = "";
     clearTimeout(idle);
@@ -106,6 +108,7 @@ export function startZipper(root: HTMLElement, canvas: HTMLCanvasElement, tags: 
       }
       kTo = SMALL;
       delete root.dataset.awake;
+      run(); // animate the shrink
     }, IDLE_MS);
   }
 
@@ -327,8 +330,20 @@ export function startZipper(root: HTMLElement, canvas: HTMLCanvasElement, tags: 
     if (dirty) {
       draw();
       dirty = false;
+      still = 0;
+    } else if (++still > 30 && !drag) {
+      // Nothing has moved for half a second: sleep until scrolling or the pointer wakes it.
+      raf = 0;
+      return;
     }
     raf = requestAnimationFrame(frame);
+  };
+  let still = 0;
+  const run = () => {
+    if (!raf) {
+      lastY = window.scrollY;
+      raf = requestAnimationFrame(frame);
+    }
   };
 
   // ---------- input ----------
@@ -388,12 +403,12 @@ export function startZipper(root: HTMLElement, canvas: HTMLCanvasElement, tags: 
   const ro = new ResizeObserver(() => {
     placeTags();
     dirty = true;
+    run();
   });
   ro.observe(document.body);
 
   resize();
   wake();
-  raf = requestAnimationFrame(frame);
 
   return () => {
     cancelAnimationFrame(raf);

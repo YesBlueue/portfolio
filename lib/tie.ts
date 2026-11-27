@@ -285,6 +285,7 @@ export function startTie(photo: HTMLElement): () => void {
       grab = best;
       mouse = m;
       document.body.classList.add("dragging-tie");
+      start();
     }
   };
   const release = () => {
@@ -695,30 +696,60 @@ export function startTie(photo: HTMLElement): () => void {
   document.addEventListener("mouseleave", onLeave);
 
   // Fixed 60 Hz physics steps, so the tie moves at the same speed even if frames drop.
+  // The loop only runs while someone can see the tie: not behind the knitted intro, and not
+  // once the hero has scrolled well out of view (unless the tie is being held).
   let raf = 0;
+  let near = true;
+  const html = document.documentElement;
+  const hidden = () => html.dataset.intro !== "done" || (!near && grab < 0);
+  let last = 0;
+  let acc = 0;
+  const frame = (now: number) => {
+    if (hidden()) {
+      raf = 0;
+      draw(); // clears the layer while the photo is out of view
+      return;
+    }
+    acc += Math.min(250, now - last);
+    last = now;
+    let n = 0;
+    while (acc >= STEP_MS && n < 15) {
+      step();
+      acc -= STEP_MS;
+      n++;
+    }
+    draw();
+    raf = requestAnimationFrame(frame);
+  };
+  const start = () => {
+    if (reduce || raf || hidden()) return;
+    last = performance.now();
+    acc = 0;
+    raf = requestAnimationFrame(frame);
+  };
+  const io = new IntersectionObserver(
+    ([entry]) => {
+      near = entry.isIntersecting;
+      start();
+    },
+    { rootMargin: "300px 0px" },
+  );
+  io.observe(photo);
+  // Starts once the intro has unravelled.
+  const mo = new MutationObserver(start);
+  mo.observe(html, { attributes: true, attributeFilter: ["data-intro"] });
+
   if (reduce) {
     for (let i = 0; i < 200; i++) step();
     draw();
   } else {
-    let last = performance.now();
-    let acc = 0;
-    const frame = (now: number) => {
-      acc += Math.min(250, now - last);
-      last = now;
-      let n = 0;
-      while (acc >= STEP_MS && n < 15) {
-        step();
-        acc -= STEP_MS;
-        n++;
-      }
-      draw();
-      raf = requestAnimationFrame(frame);
-    };
-    raf = requestAnimationFrame(frame);
+    start();
   }
 
   return () => {
     cancelAnimationFrame(raf);
+    io.disconnect();
+    mo.disconnect();
     window.removeEventListener("resize", resize);
     window.removeEventListener("scroll", onScroll);
     canvas.remove();

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef } from "react";
+import { whenIdle } from "@/lib/idle";
 import { IMG_H, IMG_W, startTie } from "@/lib/tie";
 import styles from "./Portrait.module.css";
 
@@ -10,9 +11,12 @@ export function Portrait({ src, alt, caption, note }: { src: string; alt: string
   const photoRef = useRef<HTMLDivElement>(null);
 
   // The tie draws on its own canvas over the whole page (see lib/tie.ts).
+  // Set up once the page has loaded and the browser is idle; it's hidden behind the
+  // knitted intro on a first visit anyway.
   useEffect(() => {
-    if (!photoRef.current) return;
-    return startTie(photoRef.current);
+    const photo = photoRef.current;
+    if (!photo) return;
+    return whenIdle(() => startTie(photo));
   }, []);
 
   return (
