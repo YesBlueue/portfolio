@@ -232,10 +232,21 @@ export function startTie(photo: HTMLElement): () => void {
 
   let dpr = 1;
   let M = photoMatrix(photo);
+  // Phones resize the window whenever their toolbars slide in or out while scrolling.
+  // Reallocating a full-screen canvas then would stutter, so it only grows when needed
+  // and is rebuilt when the width or pixel ratio changes.
+  let sizedW = 0, sizedH = 0, sizedDpr = 0;
   const resize = () => {
     dpr = Math.min(2, window.devicePixelRatio || 1);
-    canvas.width = Math.round(window.innerWidth * dpr);
-    canvas.height = Math.round(window.innerHeight * dpr);
+    const w = window.innerWidth, h = window.innerHeight;
+    const sameWidth = w === sizedW && dpr === sizedDpr;
+    if (sameWidth && h <= sizedH) return;
+    sizedH = sameWidth ? Math.max(h, sizedH) : h;
+    sizedW = w;
+    sizedDpr = dpr;
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(sizedH * dpr);
+    canvas.style.height = `${sizedH}px`;
     if (reduce) draw();
   };
   // With reduced motion there's no animation loop, so redraw when the page moves.
