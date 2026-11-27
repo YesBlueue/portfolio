@@ -170,8 +170,12 @@ function texTri(ctx: CanvasRenderingContext2D, tex: HTMLCanvasElement, src: [P2,
   ctx.restore();
 }
 
-/** Layer for the tie: over the nav, zipper and spool, under the knitted intro. */
-const LAYER_Z = 80;
+/** The tie's layer: at rest, over the page but under the sticky nav (like the photo);
+ *  while it's held, over everything except the knitted intro. */
+const LAYER_REST = 30;
+const LAYER_HELD = 80;
+/** How far below the hero the layer reaches, for the tie to hang or be pulled into. */
+const BELOW = 900;
 
 /** Maps tie units to viewport pixels for `photo`, including any transform on its print. */
 function photoMatrix(photo: HTMLElement): DOMMatrix {
@@ -200,17 +204,25 @@ function photoMatrix(photo: HTMLElement): DOMMatrix {
     .scaleSelf(k);
 }
 
-/** Starts the tie for `photo`, on a canvas of its own over the page. Returns a cleanup function. */
+/**
+ * Starts the tie for `photo`, on a canvas of its own over the page. Returns a cleanup
+ * function.
+ *
+ * The canvas sits in the page itself (from the top down to a little below the hero) rather
+ * than fixed to the window, so it scrolls together with the photo. Scrolling is done by the
+ * browser off the main thread, and a fixed layer redrawn to follow would trail a frame
+ * behind the photo.
+ */
 export function startTie(photo: HTMLElement): () => void {
+  const hero = photo.closest<HTMLElement>("header, section") ?? document.body;
   const canvas = document.createElement("canvas");
   canvas.setAttribute("aria-hidden", "true");
   Object.assign(canvas.style, {
-    position: "fixed",
-    inset: "0",
-    width: "100vw",
-    height: "100vh",
+    position: "absolute",
+    left: "0",
+    top: "0",
     pointerEvents: "none",
-    zIndex: String(LAYER_Z),
+    zIndex: String(LAYER_REST),
     // The same grade as the photo (Portrait.module.css), so the collar repaint matches.
     filter: "sepia(0.1) saturate(1.05) contrast(1.03)",
   });
@@ -231,28 +243,25 @@ export function startTie(photo: HTMLElement): () => void {
   }));
 
   let dpr = 1;
-  let M = photoMatrix(photo);
-  // Phones resize the window whenever their toolbars slide in or out while scrolling.
-  // Reallocating a full-screen canvas then would stutter, so it only grows when needed
-  // and is rebuilt when the width or pixel ratio changes.
+  // Sized from the page layout, not the window height, so phone toolbars sliding in and
+  // out don't reallocate it.
   let sizedW = 0, sizedH = 0, sizedDpr = 0;
   const resize = () => {
     dpr = Math.min(2, window.devicePixelRatio || 1);
-    const w = window.innerWidth, h = window.innerHeight;
-    const sameWidth = w === sizedW && dpr === sizedDpr;
-    if (sameWidth && h <= sizedH) return;
-    sizedH = sameWidth ? Math.max(h, sizedH) : h;
+    const w = document.documentElement.clientWidth;
+    const h = Math.ceil(hero.getBoundingClientRect().bottom + window.scrollY + BELOW);
+    if (w === sizedW && h === sizedH && dpr === sizedDpr) return;
     sizedW = w;
+    sizedH = h;
     sizedDpr = dpr;
     canvas.width = Math.round(w * dpr);
-    canvas.height = Math.round(sizedH * dpr);
-    canvas.style.height = `${sizedH}px`;
-    if (reduce) draw();
+    canvas.height = Math.round(h * dpr);
+    canvas.style.width = `${w}px`;
+    canvas.style.height = `${h}px`;
+    draw();
   };
-  // With reduced motion there's no animation loop, so redraw when the page moves.
-  const onScroll = () => {
-    if (reduce) draw();
-  };
+  const ro = new ResizeObserver(resize);
+  ro.observe(hero);
 
   // Pointer, tracked on the whole window since the tie hangs outside the photo.
   let mouse: Vec | null = null;
@@ -296,12 +305,14 @@ export function startTie(photo: HTMLElement): () => void {
       grab = best;
       mouse = m;
       document.body.classList.add("dragging-tie");
+      canvas.style.zIndex = String(LAYER_HELD);
       start();
     }
   };
   const release = () => {
     grab = -1;
     document.body.classList.remove("dragging-tie");
+    canvas.style.zIndex = String(LAYER_REST);
   };
   const onLeave = () => {
     mouse = prev = null;
@@ -429,21 +440,14 @@ export function startTie(photo: HTMLElement): () => void {
     if (!ctx) return;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    M = photoMatrix(photo);
+    const view = photoMatrix(photo);
     // Nothing to draw while the photo is well off screen (unless the tie is in hand).
-    const top = M.f, h = window.innerHeight;
+    const top = view.f, h = window.innerHeight;
     if (grab < 0 && (top > h + 400 || top + photo.offsetHeight < -1200)) return;
-    // At rest, keep the tie under the sticky nav like the photo it hangs from; while it's
-    // being pulled, it goes over everything.
+    // From the window to the canvas, which scrolls with the page.
+    const c = canvas.getBoundingClientRect();
+    const M = new DOMMatrix().translateSelf(-c.left, -c.top).multiplySelf(view);
     ctx.save();
-    if (grab < 0) {
-      const nav = document.querySelector("nav")?.getBoundingClientRect();
-      if (nav && nav.bottom > 0) {
-        ctx.beginPath();
-        ctx.rect(0, nav.bottom * dpr, canvas.width, canvas.height);
-        ctx.clip();
-      }
-    }
     ctx.setTransform(M.a * dpr, M.b * dpr, M.c * dpr, M.d * dpr, M.e * dpr, M.f * dpr);
     drawTie();
     ctx.restore();
@@ -698,7 +702,6 @@ export function startTie(photo: HTMLElement): () => void {
 
   resize();
   window.addEventListener("resize", resize);
-  window.addEventListener("scroll", onScroll, { passive: true });
   window.addEventListener("pointermove", onMove);
   window.addEventListener("pointerdown", onDown);
   window.addEventListener("pointerup", release);
@@ -762,7 +765,7 @@ export function startTie(photo: HTMLElement): () => void {
     io.disconnect();
     mo.disconnect();
     window.removeEventListener("resize", resize);
-    window.removeEventListener("scroll", onScroll);
+    ro.disconnect();
     canvas.remove();
     window.removeEventListener("pointermove", onMove);
     window.removeEventListener("pointerdown", onDown);
