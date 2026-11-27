@@ -83,7 +83,7 @@ export const site = {
       items: ["Next.js", "Spring / J2EE", "shadcn/ui", "Three.js", "Godot", "Supabase", "MySQL", "Vercel"],
     },
     { label: "Hardware", items: ["Arduino", "Raspberry Pi", "Electronics"] },
-    { label: "Design", items: ["UI/UX"] },
+    { label: "Design", items: ["UI/UX", "Game Assets", "Graphics"] },
     { label: "Currently learning", items: ["Machine Learning", "AI Engineering", "Java"] },
   ],
 };
@@ -101,7 +101,7 @@ export const journey: Milestone[] = [
   { when: "Jul 2026", title: "Founder and peer tutor, Learnabyte", note: "A study community that's grown past 180 members.", image: { src: "/journey/learnabyte.webp", alt: "Learnabyte poster: the name on a notebook page, a free study community for UIT students with 180+ members, covering programming, computer science and math.", width: 800, height: 600 } },
   { when: "Aug 2026", title: "Champion, Impromptu Talk Competition", note: "Public speaking on stage at UIT.", image: { src: "/journey/impromptu.webp", alt: "Thaw Thaw Tun holding a first prize certificate with other contestants at the UIT Impromptu Talk Competition.", width: 800, height: 600 } },
   { when: "Sep 2026", title: "2nd highest scorer, Batch 12", note: "Prize for the first-year exams at UIT.", image: { src: "/journey/second-highest-marks.webp", alt: "Thaw Thaw Tun receiving a trophy on stage at a UIT prize-giving ceremony.", width: 800, height: 600 } },
-  { when: "Nov 2026", title: "Participant, NASA Space Apps Challenge", note: "NASA's global hackathon for space and science." },
+  { when: "Nov 2026", title: "Participant, NASA Space Apps Challenge", note: "NASA's global hackathon for space and science.", image: { src: "/journey/nasa-space-apps.webp", alt: "Thaw Thaw Tun and five teammates in matching NASA Space Apps Yangon T-shirts, in front of the event backdrop.", width: 800, height: 600 } },
   { when: "Dec 2026", title: "Presenter, Project Show", note: "Coming soon.", image: { src: "/journey/project-show.webp", alt: "Stairs and walkways inside the UIT building.", width: 800, height: 600 }, next: true },
   { when: "Next", title: "Machine learning & AI", note: "Where the thread goes next.", next: true },
 ];
