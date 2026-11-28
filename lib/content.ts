@@ -24,6 +24,8 @@ export type Milestone = {
   title: string;
   note: string;
   image?: { src: string; alt: string; width: number; height: number };
+  /** Handwritten on the print when the photo is opened full size. */
+  caption?: string;
   /** The last stop: where things are heading. */
   next?: boolean;
 };
@@ -54,13 +56,13 @@ export const site = {
       caption: "UIT Impromptu Talk Competition 2026",
     } as { src: string; alt: string; width: number; height: number; caption?: string } | undefined,
     lead: "I lead team projects from design to deployment, and I run a 180+ member study community that teaches programming, computer science and math.",
-    body: "I'm a third-year Computer Science student at the University of Information Technology, Yangon, with an outstanding GPA of 3.99. Besides full-stack web work, I've made games in Godot, and since June 2026 I've been an IT intern at Grand Royal Group International, through to December. Now I'm expanding my learning towards machine learning and AI engineering.",
+    body: "I'm a third-year Computer Science student at the University of Information Technology, Yangon, with an outstanding GPA of 3.99. Besides full-stack web work, I've made games in Godot, and from June to December 2026 I interned at Grand Royal Group International. Now I'm expanding my learning towards machine learning and AI engineering.",
   },
   experience: [
     {
       title: "IT Intern, Grand Royal Group International",
-      meta: "Jun 2026 – present",
-      note: "Built a full-stack application with senior developers and evaluated computer vision models.",
+      meta: "Jun – Dec 2026",
+      note: "Built a full-stack application with senior developers and researched computer vision models.",
     },
     {
       title: "Founder & Peer Tutor, Learnabyte",
@@ -90,23 +92,23 @@ export const site = {
 
 // The journey timeline, oldest first. TODO: photos for the stops that don't have one yet.
 export const journey: Milestone[] = [
-  { when: "Jun 2024", title: "Six-distinction student, Matriculation Exam", note: "Distinctions in all six subjects of Myanmar's Grade 12 matriculation exam, celebrated with other top students at Meliá Yangon.", image: { src: "/journey/six-distinctions.webp", alt: "Thaw Thaw Tun with dozens of other top students, each holding an award, at a ceremony for outstanding matriculation results.", width: 800, height: 600 } },
-  { when: "Jun 2024", title: "National finalist, ASEAN-China-India Youth Leadership Summit", note: "In the Sustainability Startathon's Myanmar round, our team pitched Koko Ethan, a sustainable ethanol fuel made from rice straw.", image: { src: "/journey/aciyls.webp", alt: "Thaw Thaw Tun holding a microphone on stage with four teammates at the ASEAN-China-India Youth Leadership Summit 2024.", width: 800, height: 600 } },
-  { when: "Nov 2024", title: "Computer Science student, UIT", note: "Started at the University of Information Technology, Yangon. I'm now majoring in Knowledge Engineering.", image: { src: "/journey/uit-first-day.webp", alt: "The UIT campus atrium under its steel-and-glass roof, with students walking past.", width: 800, height: 600 } },
-  { when: "Jul 2025", title: "Frontend developer, MaMa WaWa", note: "A first-year team project, a web platform that teaches kids through stories, brain games and minigames. I built the frontend and designed the UI.", image: { src: "/journey/mama-wawa.webp", alt: "Thaw Thaw Tun presenting MaMa WaWa from a laptop, with its home page projected on the screen.", width: 800, height: 600 } },
-  { when: "Oct 2025", title: "National finalist, ASEAN Digital Awards", note: "The Myanmar Computer Federation picked MaMa WaWa to represent Myanmar in the Digital Content category at the ASEAN level.", image: { src: "/journey/asean-digital-awards.webp", alt: "The Myanmar Computer Federation letter announcing the teams selected for the ASEAN Digital Awards 2026.", width: 800, height: 600 } },
-  { when: "Feb 2026", title: "Co-creator, Smart Communication Gloves", note: "Two gloves that turn sign gestures into speech and speech into live captions, with our own 5-bit finger alphabet. The idea was mine, and I worked on both the hardware and software.", image: { src: "/projects/assistive-gloves.png", alt: "Smart Communication Gloves poster, with a black glove wired with finger sensors.", width: 1260, height: 1000 } },
-  { when: "Apr 2026", title: "Solo developer, Eaindray Go", note: "The first real video game I made, an endless 2D runner built on my own in Godot as a birthday gift.", image: { src: "/projects/eaindray-go.png", alt: "Eaindray Go cover art, a pixel-art girl running past a fox and a fence.", width: 630, height: 500 } },
+  { when: "Jun 2024", title: "Six-distinction student, Matriculation Exam", note: "Distinctions in all six Grade 12 matriculation subjects, celebrated at Meliá Yangon.", image: { src: "/journey/six-distinctions.webp", alt: "Thaw Thaw Tun with dozens of other top students, each holding an award, at a ceremony for outstanding matriculation results.", width: 800, height: 600 }, caption: "Six for six, Meliá Yangon 2024" },
+  { when: "Jun 2024", title: "National finalist, ASEAN-China-India Youth Leadership Summit", note: "In the Sustainability Startathon, we pitched Koko Ethan, ethanol fuel from rice straw.", image: { src: "/journey/aciyls.webp", alt: "Thaw Thaw Tun holding a microphone on stage with four teammates at the ASEAN-China-India Youth Leadership Summit 2024.", width: 800, height: 600 }, caption: "Pitching Koko Ethan, 2024" },
+  { when: "Nov 2024", title: "Computer Science student, UIT", note: "Started my Computer Science degree. Now majoring in Knowledge Engineering.", image: { src: "/journey/uit-first-day.webp", alt: "The UIT campus atrium under its steel-and-glass roof, with students walking past.", width: 800, height: 600 }, caption: "Where it all started, UIT 2024" },
+  { when: "Jul 2025", title: "Frontend developer, MaMa WaWa", note: "A first-year team project teaching kids through stories and games. I built the frontend and the UI.", image: { src: "/journey/mama-wawa.webp", alt: "Thaw Thaw Tun presenting MaMa WaWa from a laptop, with its home page projected on the screen.", width: 800, height: 600 }, caption: "Demo day, UIT 2025" },
+  { when: "Oct 2025", title: "National finalist, ASEAN Digital Awards", note: "MaMa WaWa was chosen to represent Myanmar at the ASEAN level.", image: { src: "/journey/asean-digital-awards.webp", alt: "The Myanmar Computer Federation letter announcing the teams selected for the ASEAN Digital Awards 2026.", width: 800, height: 600 }, caption: "The letter that made our week, 2025" },
+  { when: "Feb 2026", title: "Developer, Smart Communication Gloves", note: "Gloves that turn sign gestures into speech, and speech into live captions.", image: { src: "/projects/assistive-gloves.png", alt: "Smart Communication Gloves poster, with a black glove wired with finger sensors.", width: 1260, height: 1000 }, caption: "Signs into speech, 2026" },
+  { when: "Apr 2026", title: "Game developer, Eaindray Go", note: "My first real video game, an endless 2D runner I built alone in Godot as a birthday gift.", image: { src: "/projects/eaindray-go.png", alt: "Eaindray Go cover art, a pixel-art girl running past a fox and a fence.", width: 630, height: 500 }, caption: "A birthday gift, 2026" },
   { when: "May 2026", title: "Frontend developer, Market Data Intelligence App", note: "Built the frontend of an application for collecting and analysing market data." },
-  { when: "Jun 2026", title: "IT intern, Grand Royal Group", note: "Building a full-stack application with senior developers and researching computer vision models, through December.", image: { src: "/journey/grgi.webp", alt: "The Grand Royal Group reception, with its logo above a curved wooden desk.", width: 800, height: 600 } },
-  { when: "Jul 2026", title: "Participant, Let's Tech Hackathon", note: "My first hackathon, run by the Let's Tech club. Our team built AI OS. No win this time, but a first step.", image: { src: "/journey/lets-tech.webp", alt: "Thaw Thaw Tun taking a selfie in a lift with hackathon teammates.", width: 800, height: 600 } },
-  { when: "Jul 2026", title: "3rd place, UIT Innovative Hackathon", note: "Third place with Sat Thwal, a student-support app that brings tutors, housing, meals and campus transport together.", image: { src: "/journey/uit-hackathon.webp", alt: "Thaw Thaw Tun and teammates in front of the UIT Innovative Hackathon 2026 banner, holding their prize sign.", width: 800, height: 600 } },
-  { when: "Jul 2026", title: "Founder and peer tutor, Learnabyte", note: "A free Telegram study hub for UIT students, now 180+ members, where I record handwritten lecture videos on math and computer science.", image: { src: "/journey/learnabyte.webp", alt: "Learnabyte poster: the name on a notebook page, a free study community for UIT students with 180+ members, covering programming, computer science and math.", width: 800, height: 600 } },
-  { when: "Aug 2026", title: "Champion, Impromptu Talk Competition", note: "First prize at UIT, for English fluency, critical thinking and public speaking.", image: { src: "/journey/impromptu.webp", alt: "Thaw Thaw Tun holding a first prize certificate with other contestants at the UIT Impromptu Talk Competition.", width: 800, height: 600 } },
-  { when: "Aug 2026", title: "Full-stack developer, UIT Virtual Campus", note: "A campus platform with a 3D map, room search and routing, timetables and bookings. I worked on both the frontend and the API.", image: { src: "/projects/uit-virtual-campus.webp", alt: "UIT Virtual Campus poster, with a 3D model of the campus buildings.", width: 1260, height: 1000 } },
-  { when: "Sep 2026", title: "2nd highest scorer, Batch 12", note: "Second-highest marks out of 160+ students in our first-year exams, honoured at UIT's prize-giving ceremony.", image: { src: "/journey/second-highest-marks.webp", alt: "Thaw Thaw Tun receiving a trophy on stage at a UIT prize-giving ceremony.", width: 800, height: 600 } },
-  { when: "Nov 2026", title: "Participant, NASA Space Apps Challenge", note: "We took on the Martian Map challenge. We didn't win, but it was the most fun I've had at a hackathon.", image: { src: "/journey/nasa-space-apps.webp", alt: "Thaw Thaw Tun and five teammates in matching NASA Space Apps Yangon T-shirts, in front of the event backdrop.", width: 800, height: 600 } },
-  { when: "Dec 2026", title: "Presenter, Project Show", note: "Presenting UIT Virtual Campus, our 3D campus map with timetables and bookings. Coming soon.", image: { src: "/journey/project-show.webp", alt: "Stairs and walkways inside the UIT building.", width: 800, height: 600 }, next: true },
+  { when: "Jun 2026", title: "IT intern, Grand Royal Group International", note: "Built a full-stack app with senior developers and researched computer vision models.", image: { src: "/journey/grgi.webp", alt: "The Grand Royal Group reception, with its logo above a curved wooden desk.", width: 800, height: 600 }, caption: "Grand Royal office, Yangon 2026" },
+  { when: "Jul 2026", title: "Participant, Let's Tech Hackathon", note: "My first hackathon, run by the Let's Tech club, where we built AI OS. No win, but a first step.", image: { src: "/journey/lets-tech.webp", alt: "Thaw Thaw Tun taking a selfie in a lift with hackathon teammates.", width: 800, height: 600 }, caption: "Team AIE, 2026" },
+  { when: "Jul 2026", title: "3rd place, UIT Innovative Hackathon", note: "Third place with Sat Thwal, a student-support app for tutors, housing, meals and transport.", image: { src: "/journey/uit-hackathon.webp", alt: "Thaw Thaw Tun and teammates in front of the UIT Innovative Hackathon 2026 banner, holding their prize sign.", width: 800, height: 600 }, caption: "Team Euphoria, 2026" },
+  { when: "Jul 2026", title: "Founder and peer tutor, Learnabyte", note: "A free study hub for 180+ UIT students, with my handwritten math and CS lectures.", image: { src: "/journey/learnabyte.webp", alt: "Learnabyte poster: the name on a notebook page, a free study community for UIT students with 180+ members, covering programming, computer science and math.", width: 800, height: 600 }, caption: "180+ and counting" },
+  { when: "Aug 2026", title: "Champion, Impromptu Talk Competition", note: "First prize at UIT, for English fluency, critical thinking and public speaking.", image: { src: "/journey/impromptu.webp", alt: "Thaw Thaw Tun holding a first prize certificate with other contestants at the UIT Impromptu Talk Competition.", width: 800, height: 600 }, caption: "With my classmates, UIT 2026" },
+  { when: "Aug 2026", title: "Full-stack developer, UIT Virtual Campus", note: "A campus platform with a 3D map, timetables and bookings. I worked on the frontend and API.", image: { src: "/projects/uit-virtual-campus.webp", alt: "UIT Virtual Campus poster, with a 3D model of the campus buildings.", width: 1260, height: 1000 }, caption: "Find your way, UIT 2026" },
+  { when: "Sep 2026", title: "2nd highest scorer, Batch 12", note: "Second-highest first-year marks out of 160+ students, honoured at UIT's prize-giving.", image: { src: "/journey/second-highest-marks.webp", alt: "Thaw Thaw Tun receiving a trophy on stage at a UIT prize-giving ceremony.", width: 800, height: 600 }, caption: "Prize day, UIT 2026" },
+  { when: "Nov 2026", title: "Participant, NASA Space Apps Challenge", note: "We took on the Martian Map challenge. No win, but the most fun I've had at a hackathon.", image: { src: "/journey/nasa-space-apps.webp", alt: "Thaw Thaw Tun and five teammates in matching NASA Space Apps Yangon T-shirts, in front of the event backdrop.", width: 800, height: 600 }, caption: "Team StarSprouts, UIT 2026" },
+  { when: "Dec 2026", title: "Presenter, Project Show", note: "Presenting UIT Virtual Campus, our 3D campus map with timetables and bookings. Coming soon.", image: { src: "/journey/project-show.webp", alt: "Stairs and walkways inside the UIT building.", width: 800, height: 600 }, next: true, caption: "See you in December" },
   { when: "Next", title: "Machine learning & AI", note: "Where the thread goes next.", next: true },
 ];
 
@@ -154,7 +156,7 @@ export const projects: Project[] = [
     pitch: "Two gloves that turn sign gestures into speech and speech into captions.",
     description:
       "An assistive prototype for deaf and mute users that speaks gestures and finger-spelled words aloud, and shows live captions on the wrist. The idea was mine, and I worked on the hardware and software, including our own 5-bit finger alphabet.",
-    role: "Co-creator · Hardware & software",
+    role: "Developer · Hardware & software",
     stack: ["Arduino", "Raspberry Pi", "Python", "Electronics"],
     image: {
       src: "/projects/assistive-gloves.png",

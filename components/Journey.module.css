@@ -247,6 +247,15 @@
 }
 
 /* Phones: the seam runs down the left, labels to its right. */
+/* Small laptops and tablets: the columns are too narrow for the photo beside the text,
+   so the photo goes on top and the text gets the label's full width. */
+@media (min-width: 761px) and (max-width: 1100px) {
+  .tag {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
 @media (max-width: 760px) {
   .row {
     grid-template-columns: 36px 1fr;
