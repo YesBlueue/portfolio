@@ -26,6 +26,8 @@ export type Milestone = {
   image?: { src: string; alt: string; width: number; height: number };
   /** Handwritten on the print when the photo is opened full size. */
   caption?: string;
+  /** The whole, uncropped photo, shown when it's opened. Falls back to `image`. */
+  full?: { src: string; width: number; height: number };
   /** The last stop: where things are heading. */
   next?: boolean;
 };

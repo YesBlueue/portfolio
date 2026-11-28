@@ -193,6 +193,20 @@
 .row:nth-child(even) .photo {
   transform: rotate(-1deg);
 }
+/* The photo opens full size when clicked. */
+.open {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: var(--cur-pointer);
+}
+.open:focus-visible {
+  outline: 3px solid var(--mustard);
+  outline-offset: 3px;
+}
+
 .photo img,
 .blank {
   display: block;

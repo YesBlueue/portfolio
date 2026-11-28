@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import type { Milestone } from "@/lib/content";
 import { Ordinals } from "./Ordinals";
+import { PhotoPrint, type Print } from "./PhotoPrint";
 import styles from "./Journey.module.css";
 
 const GAP = 30; // how far apart the two cloths hang before they're sewn
@@ -33,6 +34,16 @@ export function Journey({ milestones, head }: { milestones: Milestone[]; head: R
   const stitchRef = useRef<SVGPathElement>(null);
   const stitchShadowRef = useRef<SVGPathElement>(null);
   const needleRef = useRef<SVGGElement>(null);
+
+  // Photos that can be opened full size, and which one is open.
+  const withPhotos = milestones.flatMap((m, i) => (m.image ? [i] : []));
+  const prints: Print[] = withPhotos.map((i) => {
+    const m = milestones[i], img = m.image!;
+    return { ...img, ...(m.full ?? {}), alt: img.alt, title: m.title, caption: m.caption };
+  });
+  const [open, setOpen] = useState<number | null>(null);
+  const thumbs = useRef<(HTMLButtonElement | null)[]>([]);
+  const origin = useCallback((i: number) => thumbs.current[i]?.querySelector("img") ?? null, []);
 
   useEffect(() => {
     const section = sectionRef.current, left = leftRef.current, right = rightRef.current;
@@ -191,13 +202,23 @@ export function Journey({ milestones, head }: { milestones: Milestone[]; head: R
       <div className={`inner ${styles.inner}`}>
         {head}
         <ol ref={listRef} className={styles.list}>
-          {milestones.map((m) => (
+          {milestones.map((m, i) => (
             <li key={m.title} className={styles.row}>
               <span className={styles.knot} data-knot="" aria-hidden="true" />
               <article className={`${styles.tag} ${m.next ? styles.next : ""}`}>
                 <figure className={styles.photo}>
                   {m.image ? (
-                    <Image src={m.image.src} alt={m.image.alt} width={m.image.width} height={m.image.height} sizes="(max-width: 760px) 70vw, 220px" />
+                    <button
+                      type="button"
+                      className={styles.open}
+                      ref={(el) => {
+                        thumbs.current[withPhotos.indexOf(i)] = el;
+                      }}
+                      onClick={() => setOpen(withPhotos.indexOf(i))}
+                      aria-label={`View photo: ${m.title}`}
+                    >
+                      <Image src={m.image.src} alt={m.image.alt} width={m.image.width} height={m.image.height} sizes="(max-width: 760px) 70vw, 220px" />
+                    </button>
                   ) : (
                     <span className={styles.blank}>{m.next ? "soon" : "photo"}</span>
                   )}
@@ -214,6 +235,10 @@ export function Journey({ milestones, head }: { milestones: Milestone[]; head: R
           ))}
         </ol>
       </div>
+
+      {open !== null && (
+        <PhotoPrint prints={prints} index={open} origin={origin} onMove={setOpen} onClose={() => setOpen(null)} />
+      )}
     </section>
   );
 }

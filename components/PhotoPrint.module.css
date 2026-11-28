@@ -1,0 +1,130 @@
+/* Over everything on the page (nav, zipper, spool, a held tie), under the knitted intro. */
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 12, 8, 0.8);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.root[data-shown] .backdrop {
+  opacity: 1;
+}
+
+.stage {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  /* Room for the close button above, and the caption below. */
+  padding: 40px 0 0;
+}
+
+.print {
+  background: #fffaf1;
+  border-radius: 3px;
+  box-shadow:
+    0 2px 0 rgba(0, 0, 0, 0.08),
+    0 40px 70px -24px rgba(0, 0, 0, 0.85);
+  transform-origin: center;
+  transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.25, 1.05);
+}
+
+.photo {
+  display: block;
+  max-width: none;
+  border-radius: 1px;
+  background: #e9e1d3;
+}
+
+/* Handwritten on the white strip, like the hero's "Yangon, 2026". */
+.caption {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
+  font: 600 clamp(20px, 3.4vw, 28px) / 1.1 var(--f-hand);
+  color: var(--wool-navy);
+}
+
+.close,
+.nav {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(250, 244, 234, 0.92);
+  color: var(--cocoa);
+  cursor: var(--cur-pointer);
+  box-shadow: 0 6px 14px -6px rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  transition:
+    opacity 0.3s ease,
+    background 0.2s;
+}
+.root[data-shown] .close,
+.root[data-shown] .nav {
+  opacity: 1;
+}
+.close:hover,
+.nav:hover {
+  background: #fff;
+}
+.close svg,
+.nav svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.close {
+  top: 16px;
+  right: 16px;
+}
+.nav {
+  top: 50%;
+  margin-top: -22px;
+}
+.prev {
+  left: 16px;
+}
+.next {
+  right: 16px;
+}
+
+/* Phones: arrows sit low, out of the photo's way; swiping works too. */
+@media (max-width: 760px) {
+  .nav {
+    top: auto;
+    bottom: 18px;
+    margin-top: 0;
+  }
+  .prev {
+    left: calc(50% - 56px);
+  }
+  .next {
+    right: calc(50% - 56px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backdrop,
+  .print,
+  .close,
+  .nav {
+    transition: none;
+  }
+}
